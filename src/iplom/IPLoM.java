@@ -17,6 +17,8 @@
  *
  */
 
+package iplom;
+
 import java.io.*;
 import static java.lang.System.out;
 
@@ -56,6 +58,19 @@ public class IPLoM {
   }
 	
 	
+  /*
+   * Read the log file by selected line
+   */
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 	
 	
 	
