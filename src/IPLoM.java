@@ -1,5 +1,5 @@
 /**
- * Class: IPLoM
+ * Class: IPLoM (Iterative Partitioning Log Mining)
  * 
  * Based on the log mining algorithms published on the following papers:
  * 
@@ -11,16 +11,49 @@
  * algorithm for message type extraction in system application logs. Knowledge and Data
  * Engineering, IEEE Transactions on, 24(11):1921–1936, 2012.
  * 
- * @author edghklj
+ * @author ERICSSON/edghklj (Chang Liu)
  *
  * Created AT 2016-02-22
  *
  */
 
+import java.io.*;
+import static java.lang.System.out;
 
 public class IPLoM {
 
 	
+  
+  /*
+   * Read the log file by lines
+   */
+  public static void readFileByLines(String fileName) {
+    File file = new File(fileName);
+    BufferedReader reader = null;
+    
+    try {
+      out.println("Read the file by lines.");
+      reader = new BufferedReader(new FileReader(file));
+      String tempString = null;
+      int line = 1;
+      
+      while ((tempString = reader.readLine()) != null) {
+        out.println("LINE " + line + ": " + tempString);
+        line ++;
+      }
+      
+      reader.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (Exception e1) {
+        }
+      }
+    }
+  }
 	
 	
 	
@@ -40,7 +73,9 @@ public class IPLoM {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		String fileName = "messages";
+		
+		readFileByLines(fileName);
 
 	}
 
