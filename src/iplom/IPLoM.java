@@ -13,21 +13,29 @@
  * 
  * @author ERICSSON/edghklj (Chang Liu)
  *
- * Created AT 2016-02-22
+ * Initially Created: 2016-02-22
  *
  */
 
 package iplom;
 
 import java.io.*;
+import java.util.StringTokenizer;
 import static java.lang.System.out;
+
 
 public class IPLoM {
 
-	
+  /**
+   * Define the delimiter for separating strings into tokens
+   */
+  private static String delimiter = " []=:()";
   
-  /*
+  
+  /**
    * Read the log file by lines
+   * @param 
+   * String fileName: input log file name(path)
    */
   public static void readFileByLines(String fileName) {
     File file = new File(fileName);
@@ -37,11 +45,11 @@ public class IPLoM {
       out.println("Read the file by lines.");
       reader = new BufferedReader(new FileReader(file));
       String tempString = null;
-      int line = 1;
+      int currentLine = 1;
       
       while ((tempString = reader.readLine()) != null) {
-        out.println("LINE " + line + ": " + tempString);
-        line ++;
+        singleLineProcess(tempString, currentLine);
+        currentLine ++;
       }
       
       reader.close();
@@ -56,11 +64,29 @@ public class IPLoM {
       }
     }
   }
-	
-	
-  /*
-   * Read the log file by selected line
+  
+  /**
+   * Process a single line of the log
+   * @param 
+   * String str: input string
+   * int currentLine: current line number
    */
+  public static void singleLineProcess(String str, int currentLine) {
+    out.println("LINE " + currentLine + ": " + str);
+    out.println("#tokens: " + countTokenSize(str));
+  }
+  
+	
+  /**
+   * Count the #tokens of a string
+   * @param 
+   * String str: input string
+   */
+	public static int countTokenSize(String str) {
+	  StringTokenizer token = new StringTokenizer(str, delimiter);
+	  return token.countTokens();
+	}
+
   
   
   
