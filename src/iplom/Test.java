@@ -23,7 +23,7 @@ public class Test {
     //logAnalyzer.printSizePartition();
     logAnalyzer.partitionByTokenPosition();
     
-    out.println(logAnalyzer.returnFile());
+    out.println("The analyzed log file: " + logAnalyzer.returnFile());
     
   }
 
