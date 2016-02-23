@@ -21,6 +21,9 @@ package iplom;
 
 import java.io.*;
 import java.util.*;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import static java.lang.System.out;
 
 
@@ -36,7 +39,7 @@ public class IPLoM {
    * Define the partition support threshold
    * Default: 8
    */
-  private Integer partitioSupportThreshold = 8;
+  private Integer partitionSupportThreshold = 8;
   
   /**
    * Define the source file name (path)
@@ -86,7 +89,7 @@ public class IPLoM {
    * Set the log file
    */
   public void setThreshold(Integer threshold) {
-    this.partitioSupportThreshold = threshold;
+    this.partitionSupportThreshold = threshold;
   }
   
   /*
@@ -143,7 +146,7 @@ public class IPLoM {
    * String str: input string
    */
 	private int countTokenSize(String str) {
-	  StringTokenizer tokens = new StringTokenizer(str, delimiter);
+	  StringTokenizer tokens = new StringTokenizer(str, this.delimiter);
 	  return tokens.countTokens();
 	}
 
@@ -157,7 +160,7 @@ public class IPLoM {
     BufferedReader reader = null;
     
     try {
-      out.println("Read the file by lines.");
+      out.println("Partition by token size.");
       reader = new BufferedReader(new FileReader(this.sourceFile));
       String tempString = null;
       //int currentLine = 1;
@@ -208,13 +211,44 @@ public class IPLoM {
    * Partition each of the partitions with same token sizes based on the token positions
    * @param 
    */
-  public void partitionByTokenPosition() {
+  public void partitionByTokenPosition() {    
     
-    for (Map.Entry<Integer, ArrayList<String>> entry: partitionsBySize.entrySet()) {
-      out.println(entry.getKey() + " " + entry.getValue().size());
-      for (String oneLog: entry.getValue()) {
-        out.println(oneLog);
+    out.println("Partition by token position.");
+    
+    for (Map.Entry<Integer, ArrayList<String>> partitionEntry: partitionsBySize.entrySet()) {
+      out.println(partitionEntry.getKey() + " " + partitionEntry.getValue().size() + " " + partitionEntry.getValue());
+      Integer tempSize = partitionEntry.getKey();
+      List<HashMap<String, Integer>> tokenCollection = new ArrayList<HashMap<String, Integer>>(tempSize);
+      
+      while(tokenCollection.size() < tempSize) {
+        tokenCollection.add(new HashMap<String, Integer>());
       }
+      
+      for (String oneLog: partitionEntry.getValue()) {
+        StringTokenizer oneLogTokens = new StringTokenizer(oneLog, this.delimiter);
+        
+        for (int i = 0; i < tempSize; i++) {
+          String oneToken = oneLogTokens.nextToken();
+          
+          HashMap<String, Integer> logEntry = tokenCollection.get(i);
+          
+          if (logEntry.containsKey(oneToken)) {
+             // logEntry.get(oneToken) ++;
+             Integer tempValue = logEntry.get(oneToken);
+             tempValue++;
+             logEntry.remove(oneToken);
+             logEntry.put(oneToken, tempValue);
+          } else {
+            logEntry.put(oneToken, 1);
+          }
+
+        }
+      }
+      
+      for (HashMap<String, Integer> logEntry: tokenCollection) {
+        out.println(logEntry);
+      }
+      
     }
     
     
