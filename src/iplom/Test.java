@@ -5,7 +5,7 @@
 package iplom;
 
 //import java.io.*;
-//import static java.lang.System.out;
+import static java.lang.System.out;
 
 
 public class Test {
@@ -17,11 +17,13 @@ public class Test {
     String fileName = "/home/edghklj/workspace/github/iplom-java/messages";
     IPLoM logAnalyzer = new IPLoM(fileName);
     
-    logAnalyzer.readByLines();
-    // out.println(logAnalyzer.returnFile());
+    // logAnalyzer.readByLines();
     
     logAnalyzer.partitionByTokenSize();
-    logAnalyzer.printSizePartition();
+    //logAnalyzer.printSizePartition();
+    logAnalyzer.partitionByTokenPosition();
+    
+    out.println(logAnalyzer.returnFile());
     
   }
 
