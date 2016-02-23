@@ -14,7 +14,7 @@ public class Test {
    * @param args
    */
   public static void main(String[] args) {
-    String fileName = "/home/edghklj/workspace/github/iplom-java/messages";
+    String fileName = "/home/edghklj/workspace/github/messages";
     IPLoM logAnalyzer = new IPLoM(fileName);
     
     // logAnalyzer.readByLines();
