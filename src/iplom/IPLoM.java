@@ -20,35 +20,95 @@
 package iplom;
 
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
 import static java.lang.System.out;
 
 
 public class IPLoM {
 
   /**
-   * Define the delimiter for separating strings into tokens
+   * Define the delimiter for separating a log message into tokens
+   * Default: " []=:()/|\'\""
    */
-  private static String delimiter = " []=:()";
+  private String delimiter = " []=:()/|\'\"";
   
+  /**
+   * Define the partition support threshold
+   * Default: 8
+   */
+  private Integer partitioSupportThreshold = 8;
+  
+  /**
+   * Define the source file name (path)
+   */
+  private File sourceFile;
+  
+  /**
+   * Partitions based on #tokens
+   */
+  private Map<Integer, ArrayList<String>> partitionsBySize;
+  
+  /**
+   * Constructors
+   */
+  public IPLoM () { 
+    this.sourceFile = null;
+    partitionsBySize = new HashMap<Integer, ArrayList<String>>();
+  }
+  
+  public IPLoM (String fileName) {
+    this.sourceFile = new File(fileName);
+    partitionsBySize = new HashMap<Integer, ArrayList<String>>();
+  }
+  
+  /**
+   * Set the log file
+   */
+  public void setFile(String fileName) {
+    this.sourceFile = new File(fileName);
+  }
+  
+  /**
+   * Print the log file name(path)
+   */
+  public File returnFile () {
+    return this.sourceFile;
+  }
+  
+  /**
+   * Set the delimiter
+   */
+  public void setDelimiter(String delimiter) {
+    this.delimiter = delimiter;
+  }
+  
+  /**
+   * Set the log file
+   */
+  public void setThreshold(Integer threshold) {
+    this.partitioSupportThreshold = threshold;
+  }
+  
+  /*
+   * ------------------------------------------------------------------
+   */
   
   /**
    * Read the log file by lines
    * @param 
    * String fileName: input log file name(path)
    */
-  public static void readFileByLines(String fileName) {
-    File file = new File(fileName);
+  public void readByLines() {
     BufferedReader reader = null;
     
     try {
       out.println("Read the file by lines.");
-      reader = new BufferedReader(new FileReader(file));
+      reader = new BufferedReader(new FileReader(this.sourceFile));
       String tempString = null;
       int currentLine = 1;
       
       while ((tempString = reader.readLine()) != null) {
-        singleLineProcess(tempString, currentLine);
+        singleLinePrint(tempString, currentLine);
         currentLine ++;
       }
       
@@ -71,9 +131,9 @@ public class IPLoM {
    * String str: input string
    * int currentLine: current line number
    */
-  public static void singleLineProcess(String str, int currentLine) {
+  private void singleLinePrint(String str, int currentLine) {
     out.println("LINE " + currentLine + ": " + str);
-    out.println("#tokens: " + countTokenSize(str));
+    out.println("#Tokens: " + countTokenSize(str));
   }
   
 	
@@ -82,42 +142,119 @@ public class IPLoM {
    * @param 
    * String str: input string
    */
-	public static int countTokenSize(String str) {
-	  StringTokenizer token = new StringTokenizer(str, delimiter);
-	  return token.countTokens();
+	private int countTokenSize(String str) {
+	  StringTokenizer tokens = new StringTokenizer(str, delimiter);
+	  return tokens.countTokens();
 	}
 
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
-	 * @param args
+	 * Partition the log messages based on the #tokens
+	 * @param 
+	 * 
 	 */
-	public static void main(String[] args) {
-		String fileName = "messages";
-		
-		readFileByLines(fileName);
+  public void partitionByTokenSize() {
+    BufferedReader reader = null;
+    
+    try {
+      out.println("Read the file by lines.");
+      reader = new BufferedReader(new FileReader(this.sourceFile));
+      String tempString = null;
+      //int currentLine = 1;
+      int tokenSize = 0;
+      
+      while ((tempString = reader.readLine()) != null) {
+        tokenSize = countTokenSize(tempString);
+        if (partitionsBySize.containsKey(tokenSize)) {
+          partitionsBySize.get(tokenSize).add(tempString);
+        } else {
+          ArrayList<String> tempList = new ArrayList<String>();
+          tempList.add(tempString);
+          partitionsBySize.put(tokenSize, tempList);
+        }
+        //currentLine ++;
+      }
+      
+      reader.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (Exception e1) {
+        }
+      }
+    }
+  }
+  
+  
+  /**
+   * Print the sizePartitions
+   * @param 
+   */
+  public void printSizePartition() {
+    for (Map.Entry<Integer, ArrayList<String>> entry: partitionsBySize.entrySet()) {
+      // out.println(entry.getKey() + " " + entry.getValue().size() + " " + entry.getValue());
+      out.println(entry.getKey() + " " + entry.getValue().size());
+      for (String oneLog: entry.getValue()) {
+        out.println(oneLog);
+      }
+    }
+  }
+  
+  
+  /**
+   * Partition each of the partitions with same token sizes based on the token positions
+   * @param 
+   */
+  public void partitionByTokenPosition() {
+    
+    for (Map.Entry<Integer, ArrayList<String>> entry: partitionsBySize.entrySet()) {
+      out.println(entry.getKey() + " " + entry.getValue().size());
+      for (String oneLog: entry.getValue()) {
+        out.println(oneLog);
+      }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
-	}
 
 }
