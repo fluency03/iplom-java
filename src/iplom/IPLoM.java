@@ -21,8 +21,7 @@ package iplom;
 
 import java.io.*;
 import java.util.*;
-
-import org.apache.commons.lang3.tuple.Pair;
+//import org.apache.commons.lang3.tuple.Pair;
 
 import static java.lang.System.out;
 
@@ -233,11 +232,12 @@ public class IPLoM {
           HashMap<String, Integer> logEntry = tokenCollection.get(i);
           
           if (logEntry.containsKey(oneToken)) {
-             // logEntry.get(oneToken) ++;
-             Integer tempValue = logEntry.get(oneToken);
-             tempValue++;
-             logEntry.remove(oneToken);
-             logEntry.put(oneToken, tempValue);
+            // logEntry.get(oneToken) ++; // TODO this causes error
+            // TODO I want to simplify this
+            Integer tempValue = logEntry.get(oneToken);
+            tempValue++;
+            logEntry.remove(oneToken);
+            logEntry.put(oneToken, tempValue);
           } else {
             logEntry.put(oneToken, 1);
           }
@@ -245,28 +245,49 @@ public class IPLoM {
         }
       }
       
-      for (HashMap<String, Integer> logEntry: tokenCollection) {
-        out.println(logEntry);
-      }
+      // For debugging
+      printTokenCollection(tokenCollection);
+      
+      out.println("Position with lowest cardinality: " + positionWithLowestCardinality(tokenCollection));
       
     }
     
+
     
-    
-    
-    
-    
-    
-    
-    
+
     
   }
   
   
+  /**
+   * Print the token collections, mainly for debugging
+   * @param 
+   * List<HashMap<String, Integer>> tokenCollection
+   */
+  private void printTokenCollection(List<HashMap<String, Integer>> tokenCollection) {
+    for (HashMap<String, Integer> logEntry: tokenCollection) {
+      out.println(logEntry);
+    }
+  }
   
-  
-  
-  
+  /**
+   * Determine the token position with lowest cardinality with respect to set of unique tokens
+   * @param 
+   * List<HashMap<String, Integer>> tokenCollection
+   */
+  private int positionWithLowestCardinality(List<HashMap<String, Integer>> tokenCollection) {
+    int lowestCardinality = Integer.MAX_VALUE;
+    int position = 0;
+    int tempSize = tokenCollection.size();
+    for (int j = 0; j < tempSize; j++) {
+      int tempCardinality = tokenCollection.get(j).size();
+      if (tempCardinality < lowestCardinality) {
+        lowestCardinality = tempCardinality;
+        position = j;
+      } 
+    }
+    return position;
+  }
   
   
   
