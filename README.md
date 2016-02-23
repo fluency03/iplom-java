@@ -1,4 +1,4 @@
-# iplom-java
+# iplom-java (continuously working on it)
 
 # IPLoM (Iterative Partitioning Log Mining)
 
