@@ -254,11 +254,6 @@ public class IPLoM {
     
 
     
-    
-<<<<<<< HEAD
-=======
-    
->>>>>>> 3b7ae37417e33e451be7510ea74aadc23826fb0a
 
     
   }
