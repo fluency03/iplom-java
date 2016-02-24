@@ -45,22 +45,19 @@ public class IPLoM {
    */
   private File sourceFile;
   
-  /**
-   * Partitions based on #tokens
-   */
-  private Map<Integer, ArrayList<String>> partitionsBySize;
   
-  /**
+  /** -----------------------------------------------
    * Constructors
+   * ------------------------------------------------
    */
   public IPLoM () { 
     this.sourceFile = null;
-    partitionsBySize = new HashMap<Integer, ArrayList<String>>();
+    //partitionsBySize = new HashMap<Integer, ArrayList<String>>();
   }
   
   public IPLoM (String fileName) {
     this.sourceFile = new File(fileName);
-    partitionsBySize = new HashMap<Integer, ArrayList<String>>();
+    //partitionsBySize = new HashMap<Integer, ArrayList<String>>();
   }
   
   /**
@@ -155,8 +152,9 @@ public class IPLoM {
 	 * @param 
 	 * 
 	 */
-  public void partitionByTokenSize() {
+  public Map<Integer, ArrayList<Object>> partitionByTokenSize() {
     BufferedReader reader = null;
+    Map<Integer, ArrayList<Object>> partitionsBySize = new HashMap<Integer, ArrayList<Object>>();
     
     try {
       out.println("Partition by token size.");
@@ -164,19 +162,17 @@ public class IPLoM {
       String tempString = null;
       //int currentLine = 1;
       int tokenSize = 0;
-      
       while ((tempString = reader.readLine()) != null) {
         tokenSize = countTokenSize(tempString);
         if (partitionsBySize.containsKey(tokenSize)) {
           partitionsBySize.get(tokenSize).add(tempString);
         } else {
-          ArrayList<String> tempList = new ArrayList<String>();
+          ArrayList<Object> tempList = new ArrayList<Object>();
           tempList.add(tempString);
           partitionsBySize.put(tokenSize, tempList);
         }
         //currentLine ++;
       }
-      
       reader.close();
     } catch (IOException e) {
       e.printStackTrace();
@@ -188,6 +184,8 @@ public class IPLoM {
         }
       }
     }
+    
+    return partitionsBySize;
   }
   
   
@@ -196,10 +194,11 @@ public class IPLoM {
    * @param 
    */
   public void printSizePartition() {
-    for (Map.Entry<Integer, ArrayList<String>> entry: partitionsBySize.entrySet()) {
+    Map<Integer, ArrayList<Object>> partitionsBySize = partitionByTokenSize();
+    for (Map.Entry<Integer, ArrayList<Object>> entry: partitionsBySize.entrySet()) {
       // out.println(entry.getKey() + " " + entry.getValue().size() + " " + entry.getValue());
       out.println(entry.getKey() + " " + entry.getValue().size());
-      for (String oneLog: entry.getValue()) {
+      for (Object oneLog: entry.getValue()) {
         out.println(oneLog);
       }
     }
@@ -210,31 +209,38 @@ public class IPLoM {
    * Partition each of the partitions with same token sizes based on the token positions
    * @param 
    */
-  public void partitionByTokenPosition() {    
+  public Map<Integer, ArrayList<Object>> partitionByTokenPosition() {    
     
     out.println("Partition by token position.");
     
-    for (Map.Entry<Integer, ArrayList<String>> partitionEntry: partitionsBySize.entrySet()) {
+    Map<Integer, ArrayList<Object>> partitionsBySize = partitionByTokenSize();
+    
+    
+    /*
+     * For each of the partition divided based on token size
+     */
+    for (Map.Entry<Integer, ArrayList<Object>> partitionEntry: partitionsBySize.entrySet()) {
+      
       out.println(partitionEntry.getKey() + " " + partitionEntry.getValue().size() + " " + partitionEntry.getValue());
       Integer tempSize = partitionEntry.getKey();
-      List<HashMap<String, Integer>> tokenCollection = new ArrayList<HashMap<String, Integer>>(tempSize);
+      List<HashMap<String, Object>> tokenCollection = new ArrayList<HashMap<String, Object>>(tempSize);
       
       while(tokenCollection.size() < tempSize) {
-        tokenCollection.add(new HashMap<String, Integer>());
+        tokenCollection.add(new HashMap<String, Object>());
       }
       
-      for (String oneLog: partitionEntry.getValue()) {
-        StringTokenizer oneLogTokens = new StringTokenizer(oneLog, this.delimiter);
+      for (Object oneLog: partitionEntry.getValue()) {
+        StringTokenizer oneLogTokens = new StringTokenizer((String)oneLog, this.delimiter);
         
         for (int i = 0; i < tempSize; i++) {
           String oneToken = oneLogTokens.nextToken();
           
-          HashMap<String, Integer> logEntry = tokenCollection.get(i);
+          HashMap<String, Object> logEntry = tokenCollection.get(i);
           
           if (logEntry.containsKey(oneToken)) {
-            // logEntry.get(oneToken) ++; // TODO this causes error
-            // TODO I want to simplify this
-            Integer tempValue = logEntry.get(oneToken);
+            // logEntry.get(oneToken) ++; // TODO: this causes error
+            // TODO: I want to simplify this
+            Integer tempValue = (Integer)logEntry.get(oneToken);
             tempValue++;
             logEntry.remove(oneToken);
             logEntry.put(oneToken, tempValue);
@@ -244,17 +250,36 @@ public class IPLoM {
 
         }
       }
-      
-      // For debugging
+      /* ---------- For debugging ------------ */
       printTokenCollection(tokenCollection);
+      /* ---------- For debugging ------------ */
       
-      out.println("Position with lowest cardinality: " + positionWithLowestCardinality(tokenCollection));
+      /*
+       * Calculate the partitioning position
+       * Reason for putting it here instead of merging it with the above for-loop:
+       * Merging with above for-loop adding lots of computation, when loop is rolling
+       */
+      int choosenPosition = positionWithLowestCardinality(tokenCollection);
+      out.println("Position with lowest cardinality: " + choosenPosition);
+      
+      Map<String, ArrayList<String>> partitionByPosition = new HashMap<String, ArrayList<String>>();
+      Map<String, Object> tokensAtPosition = tokenCollection.get(choosenPosition);
+      for (String tempKey: tokensAtPosition.keySet()) {
+        //out.println("Toekn: " + tempKey);
+        partitionByPosition.put(tempKey, new ArrayList<String>());
+      }
+      out.println("partitionByPosition: " + partitionByPosition);
+        
+      // TODO: how to do the partitioning ITERATIVELY!!!
+      
       
     }
-    
+    /*
+     * For each of the partition divided based on token size
+     */
 
     
-
+    return partitionsBySize;
     
   }
   
@@ -264,8 +289,8 @@ public class IPLoM {
    * @param 
    * List<HashMap<String, Integer>> tokenCollection
    */
-  private void printTokenCollection(List<HashMap<String, Integer>> tokenCollection) {
-    for (HashMap<String, Integer> logEntry: tokenCollection) {
+  private void printTokenCollection(List<HashMap<String, Object>> tokenCollection) {
+    for (HashMap<String, Object> logEntry: tokenCollection) {
       out.println(logEntry);
     }
   }
@@ -275,17 +300,24 @@ public class IPLoM {
    * @param 
    * List<HashMap<String, Integer>> tokenCollection
    */
-  private int positionWithLowestCardinality(List<HashMap<String, Integer>> tokenCollection) {
-    int lowestCardinality = Integer.MAX_VALUE;
+  private int positionWithLowestCardinality(List<HashMap<String, Object>> tokenCollection) {
     int position = 0;
+    int lowestCardinality = Integer.MAX_VALUE;
     int tempSize = tokenCollection.size();
+    // Keep the cardinality at each position
+    List<Integer> cardinality = new ArrayList<Integer>();
+    
     for (int j = 0; j < tempSize; j++) {
       int tempCardinality = tokenCollection.get(j).size();
+      // Keep the cardinality at each position
+      cardinality.add(tempCardinality);
+      
       if (tempCardinality < lowestCardinality) {
         lowestCardinality = tempCardinality;
         position = j;
       } 
     }
+    
     return position;
   }
   
