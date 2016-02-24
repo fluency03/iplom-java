@@ -214,7 +214,8 @@ public class IPLoM {
     out.println("Partition by token position.");
     
     Map<Integer, ArrayList<Object>> partitionsBySize = partitionByTokenSize();
-    
+    Map<Integer, ArrayList<String[]>> matirxBySize = new HashMap<Integer, ArrayList<String[]>>();
+    Map<Integer, Map<String, ? extends Object>> partitionByPosition = new HashMap<Integer, Map<String, ? extends Object>>(partitionsBySize.size());
     
     /*
      * For each of the partition divided based on token size
@@ -223,6 +224,7 @@ public class IPLoM {
       
       out.println(partitionEntry.getKey() + " " + partitionEntry.getValue().size() + " " + partitionEntry.getValue());
       Integer tempSize = partitionEntry.getKey();
+      matirxBySize.put(tempSize, new ArrayList<String[]>());
       List<HashMap<String, Object>> tokenCollection = new ArrayList<HashMap<String, Object>>(tempSize);
       
       while(tokenCollection.size() < tempSize) {
@@ -231,9 +233,11 @@ public class IPLoM {
       
       for (Object oneLog: partitionEntry.getValue()) {
         StringTokenizer oneLogTokens = new StringTokenizer((String)oneLog, this.delimiter);
+        String[] logArray = new String[oneLogTokens.countTokens()];
         
         for (int i = 0; i < tempSize; i++) {
           String oneToken = oneLogTokens.nextToken();
+          logArray[i] = oneToken; 
           
           HashMap<String, Object> logEntry = tokenCollection.get(i);
           
@@ -249,9 +253,12 @@ public class IPLoM {
           }
 
         }
+        //out.println("aaa");
+        //out.println(logArray[1]);
+        matirxBySize.get(tempSize).add(logArray);
       }
       /* ---------- For debugging ------------ */
-      printTokenCollection(tokenCollection);
+      //printTokenCollection(tokenCollection);
       /* ---------- For debugging ------------ */
       
       /*
@@ -262,14 +269,25 @@ public class IPLoM {
       int choosenPosition = positionWithLowestCardinality(tokenCollection);
       out.println("Position with lowest cardinality: " + choosenPosition);
       
-      Map<String, ArrayList<String>> partitionByPosition = new HashMap<String, ArrayList<String>>();
-      Map<String, Object> tokensAtPosition = tokenCollection.get(choosenPosition);
-      for (String tempKey: tokensAtPosition.keySet()) {
+      Map<String, ArrayList<Object>> partitionByTokenPosition = new HashMap<String, ArrayList<Object>>();
+      //Map<String, Object> tokensAtPosition = tokenCollection.get(choosenPosition);
+      //for (String tempKey: tokensAtPosition.keySet()) {
         //out.println("Toekn: " + tempKey);
-        partitionByPosition.put(tempKey, new ArrayList<String>());
+        //partitionByTokenPosition.put(tempKey, new ArrayList<Object>());
+      //}
+      //out.println("partitionByPosition: " + partitionByPosition);
+      for (String[] logMatrix: matirxBySize.get(tempSize)) {
+        String key = logMatrix[choosenPosition];
+        if (!partitionByTokenPosition.containsKey(key)){
+          partitionByTokenPosition.put(key, new ArrayList<Object>());
+        }
+        partitionByTokenPosition.get(key).add(logMatrix);
       }
-      out.println("partitionByPosition: " + partitionByPosition);
-        
+      
+      
+      
+      partitionByPosition.put(tempSize, partitionByTokenPosition);
+      
       // TODO: how to do the partitioning ITERATIVELY!!!
       
       
@@ -277,7 +295,11 @@ public class IPLoM {
     /*
      * For each of the partition divided based on token size
      */
-
+    
+    /* ---------- For debugging ------------ */
+    printPartitionsByPosition(partitionByPosition);
+    //out.println(matirxBySize);
+    /* ---------- For debugging ------------ */
     
     return partitionsBySize;
     
@@ -292,6 +314,17 @@ public class IPLoM {
   private void printTokenCollection(List<HashMap<String, Object>> tokenCollection) {
     for (HashMap<String, Object> logEntry: tokenCollection) {
       out.println(logEntry);
+    }
+  }
+  
+  /**
+   * Print the partitions by position, mainly for debugging
+   * @param 
+   * Map<Integer, Map<String, ? extends Object>> partitionByPosition
+   */
+  private void printPartitionsByPosition(Map<Integer, Map<String, ? extends Object>> partitionByPosition) {
+    for (Map.Entry<Integer, Map<String, ? extends Object>> entry: partitionByPosition.entrySet()) {
+      out.println(entry);
     }
   }
   
