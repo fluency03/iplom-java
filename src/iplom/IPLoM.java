@@ -41,10 +41,10 @@ public class IPLoM {
   private double partitionSupportThreshold = 0.05;
   
   /**
-   * Define the cluster goodness 0.3 ~ 0.6
+   * Define the cluster goodness threshold 0.3 ~ 0.6
    * Default: 0.4
    */
-  private double clusterGoodness = 0.4;
+  private double clusterGoodnessThreshold = 0.4;
   
   /**
    * Define the upper bound (>0.5) and lower bound (<0.5)
@@ -93,15 +93,15 @@ public class IPLoM {
   /**
    * Set the partition support threshold
    */
-  public void setThreshold(double threshold) {
-    this.partitionSupportThreshold = threshold;
+  public void setPartitionSupportThreshold(double support) {
+    this.partitionSupportThreshold = support;
   }
   
   /**
    * Set the cluster goodness
    */
-  public void setClusterGoodness(double goodness) {
-    this.clusterGoodness = goodness;
+  public void setClusterGoodnessThreshold(double goodness) {
+    this.clusterGoodnessThreshold = goodness;
   }
   
   /**
@@ -268,10 +268,10 @@ public class IPLoM {
       out.println(partitionEntry.getKey() + " " + partitionEntry.getValue().size() + " " + partitionEntry.getValue());
       Integer tempSize = partitionEntry.getKey();
       matirxBySize.put(tempSize, new ArrayList<ArrayList<String>>());
-      List<HashMap<String, Object>> tokenCollection = new ArrayList<>(tempSize);
+      List<HashMap<String, Integer>> tokenCollection = new ArrayList<>(tempSize);
       
       while(tokenCollection.size() < tempSize) {
-        tokenCollection.add(new HashMap<String, Object>());
+        tokenCollection.add(new HashMap<String, Integer>());
       }
       
       for (String oneLog: partitionEntry.getValue()) {
@@ -282,12 +282,12 @@ public class IPLoM {
           String oneToken = oneLogTokens.nextToken();
           logArray.add(oneToken); 
           
-          HashMap<String, Object> logEntry = tokenCollection.get(i);
+          HashMap<String, Integer> logEntry = tokenCollection.get(i);
           
           if (logEntry.containsKey(oneToken)) {
             // logEntry.get(oneToken) ++; // TODO: this causes error
             // TODO: I want to simplify this
-            Integer tempValue = (Integer)logEntry.get(oneToken);
+            Integer tempValue = logEntry.get(oneToken);
             tempValue++;
             logEntry.remove(oneToken);
             logEntry.put(oneToken, tempValue);
@@ -307,7 +307,7 @@ public class IPLoM {
        * Reason for putting it here instead of merging it with the above for-loop:
        * Merging with above for-loop adding lots of computation, when loop is rolling
        */
-      int choosenPosition = positionWithLowestCardinality(tokenCollection);
+      int choosenPosition = positionWithLowestCardinality(tokenCollection).getPosition();
       //out.println("Position with lowest cardinality: " + choosenPosition);
       
       for (ArrayList<String> logMatrix: matirxBySize.get(tempSize)) {
@@ -373,11 +373,34 @@ public class IPLoM {
   }
   
   /**
+   * Position chosen and cardinality list of a partition
+   */
+  private class positionCardinality {
+    private Integer position;
+    private List<Integer> cardinality;
+    
+    public positionCardinality() { }
+    
+    public positionCardinality(Integer position, List<Integer> cardinality) { 
+      this.position = position;
+      this.cardinality = cardinality;
+    }
+    
+    public Integer getPosition() { return position; }
+    public List<Integer> getCardinality() { return cardinality; }
+    
+    public void setPosition(Integer position) { this.position = position; }
+    public void setCardinality(List<Integer> cardinality) { this.cardinality = cardinality; }
+    
+  }
+  
+  
+  /**
    * Determine the token position with lowest cardinality with respect to set of unique tokens
    * @param 
    * List<HashMap<String, Integer>> tokenCollection
    */
-  private int positionWithLowestCardinality(List<HashMap<String, Object>> tokenCollection) {
+  private positionCardinality positionWithLowestCardinality(List<HashMap<String, Integer>> tokenCollection) {
     int position = 0;
     int lowestCardinality = Integer.MAX_VALUE;
     int tempSize = tokenCollection.size();
@@ -395,7 +418,7 @@ public class IPLoM {
       } 
     }
     
-    return position;
+    return (new positionCardinality(position, cardinality));
   }
   
   
@@ -408,8 +431,8 @@ public class IPLoM {
     
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
       ArrayList<ArrayList<String>> partitionIn = entry.getValue();
-      Integer tokenCount = entry.getKey().get(0);
-      positionPair<Integer, Integer> tempPair = determineP1P2(partitionIn, tokenCount);
+      Integer tokenCount = (Integer) entry.getKey().get(0);
+      positionPair tempPair = determineP1P2(partitionIn, tokenCount);
       
       
       
@@ -466,24 +489,35 @@ public class IPLoM {
   private positionPair determineP1P2(ArrayList<ArrayList<String>> partitionIn, Integer tokenCount) {
     
     if (tokenCount > 2) {
-      positionPair returnedPair = new positionPair(0 ,1);
       
+      Integer count = 1; //TODO
       
+      double clusterGoodness = (double)count/(double)tokenCount;
       
-      
-      
-      
-      
-      return returnedPair;
+      if (clusterGoodness < clusterGoodnessThreshold) {
+        return getMappingPositions(partitionIn, tokenCount);
+      } else {
+        return (new positionPair()); 
+      }
     } else if (tokenCount == 2) {
       return (new positionPair(0 ,1));
     } else {
       return (new positionPair());
     }
+    
   }
   
   
-  
+  private positionPair getMappingPositions(ArrayList<ArrayList<String>> partitionIn, Integer tokenCount) {
+    
+    
+    
+    
+    
+    
+    return (new positionPair());
+    
+  }
   
   
   
