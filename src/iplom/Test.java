@@ -20,7 +20,7 @@ public class Test {
       e.printStackTrace();
     } 
     
-    String fileName = "/home/edghklj/workspace/github/messages";
+    String fileName = "/home/edghklj/workspace/github/messages.1";
     IPLoM logAnalyzer = new IPLoM(fileName);
     
     // logAnalyzer.readByLines();
