@@ -19,11 +19,9 @@
 
 package iplom;
 
+import static java.lang.System.out;
 import java.io.*;
 import java.util.*;
-//import org.apache.commons.lang3.tuple.Pair;
-
-import static java.lang.System.out;
 
 
 public class IPLoM {
@@ -248,71 +246,73 @@ public class IPLoM {
   
   /* ----------------------------------------------------------------------------------- */
   
-  /**
-   * Pair of a token and its position
-   */
-  private class tokenPositionPair {
-    private String token = "";
-    private Integer position = 0;
-    
-    public tokenPositionPair() {}
-    
-    public tokenPositionPair(String token, Integer position){
-        this.token = token;
-        this.position = position;
-    }
-    
-    public String getToken(){ return token; }
-    public Integer getPosition(){ return position; }
-    
-    public void setToken(String token){ this.token = token; }
-    public void setPosition(Integer position){ this.position = position; }
-  }
-  
-  
-  /**
-   * Pair of positions
-   */
-  private class positionPair {
-    private Integer p1 = 0;
-    private Integer p2 = 0;
-    
-    public positionPair() {}
-    
-    public positionPair(Integer p1, Integer p2){
-        this.p1 = p1;
-        this.p2 = p2;
-    }
-    
-    public Integer getP1(){ return p1; }
-    public Integer getP2(){ return p2; }
-    
-    public void setP1(Integer p1){ this.p1 = p1; }
-    public void setP2(Integer p2){ this.p2 = p2; }
-  }
-  
-  
-  /**
-   * Position chosen and cardinality list of a partition
-   */
-  private class positionCardinality {
-    private Integer position;
-    private List<Integer> cardinality;
-    
-    public positionCardinality() { }
-    
-    public positionCardinality(Integer position, List<Integer> cardinality) { 
-      this.position = position;
-      this.cardinality = cardinality;
-    }
-    
-    public Integer getPosition() { return position; }
-    public List<Integer> getCardinality() { return cardinality; }
-    
-    public void setPosition(Integer position) { this.position = position; }
-    public void setCardinality(List<Integer> cardinality) { this.cardinality = cardinality; }
-    
-  }
+//  /**
+//   * Pair of a token and its position
+//   */
+//  private class tokenPositionPair {
+//    private String token = "";
+//    private Integer position = 0;
+//    
+//    public tokenPositionPair() {}
+//    
+//    public tokenPositionPair(String token, Integer position){
+//        this.token = token;
+//        this.position = position;
+//    }
+//    
+//    public String getToken(){ return token; }
+//    public Integer getPosition(){ return position; }
+//    
+//    public void setToken(String token){ this.token = token; }
+//    public void setPosition(Integer position){ this.position = position; }
+//  }
+//  
+//  
+//  /**
+//   * Pair of positions
+//   */
+//  private class positionPair {
+//    private Integer p1 = 0;
+//    private Integer p2 = 0;
+//    
+//    public positionPair() {}
+//    
+//    public positionPair(Integer p1, Integer p2){
+//        this.p1 = p1;
+//        this.p2 = p2;
+//    }
+//    
+//    public Integer getP1(){ return p1; }
+//    public Integer getP2(){ return p2; }
+//    
+//    public void setP1(Integer p1){ this.p1 = p1; }
+//    public void setP2(Integer p2){ this.p2 = p2; }
+//  }
+//  
+//  
+//  /**
+//   * Position chosen and cardinality list of a partition
+//   */
+//  private class positionCardinality {
+//    private Integer position;
+//    private List<Integer> cardinality;
+//    
+//    public positionCardinality() { }
+//    
+//    public positionCardinality(Integer position, List<Integer> cardinality) { 
+//      this.position = position;
+//      this.cardinality = cardinality;
+//    }
+//    
+//    public Integer getPosition() { return position; }
+//    public List<Integer> getCardinality() { return cardinality; }
+//    
+//    public void setPosition(Integer position) { this.position = position; }
+//    public void setCardinality(List<Integer> cardinality) { this.cardinality = cardinality; }
+//    
+//  }
+//  
+
   
   /* ----------------------------------------------------------------------------------- */
   
@@ -375,15 +375,15 @@ public class IPLoM {
        * Reason for putting it here instead of merging it with the above for-loop:
        * Merging with above for-loop adding lots of computation, when loop is rolling
        */
-      int chosenPosition = positionWithLowestCardinality(tokenCollection).getPosition();
+      int chosenPosition = positionWithLowestCardinality(tokenCollection).getLeft();
       //out.println("Position with lowest cardinality: " + choosenPosition);
-      tokenPositionPair tokenPosition = new tokenPositionPair("", chosenPosition);
+      Pair<String, Integer> tokenPosition = new Pair<>("", chosenPosition);
       
       for (ArrayList<String> logMatrix: matirxBySize.get(tempSize)) {
         String key = logMatrix.get(chosenPosition);
         ArrayList<Object> keyArray = new ArrayList<>();
         keyArray.add(tempSize);
-        tokenPosition.setToken(key);
+        tokenPosition.setLeft(key);
         keyArray.add(tokenPosition);
         
         if (!partitionByPosition.containsKey(keyArray)){
@@ -434,10 +434,11 @@ public class IPLoM {
    * @param 
    * Map<Integer, Map<String, ? extends Object>> partitionByPosition
    */
+  @SuppressWarnings("rawtypes")
   private void printPartitionsByPosition(Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition) {
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
-      out.println(entry.getKey().get(0) + " " + ((tokenPositionPair)entry.getKey().get(1)).getToken() + " "
-          + ((tokenPositionPair)entry.getKey().get(1)).getPosition() + " " + entry.getValue());
+      out.println(entry.getKey().get(0) + " " + ((Pair)entry.getKey().get(1)).getLeft() + " "
+          + ((Pair)entry.getKey().get(1)).getRight() + " " + entry.getValue());
     }
   }
   
@@ -447,7 +448,7 @@ public class IPLoM {
    * @param 
    * List<HashMap<String, Integer>> tokenCollection
    */
-  private positionCardinality positionWithLowestCardinality(List<HashMap<String, Integer>> tokenCollection) {
+  private Pair<Integer, List<Integer>> positionWithLowestCardinality(List<HashMap<String, Integer>> tokenCollection) {
     int position = 0;
     int lowestCardinality = Integer.MAX_VALUE;
     int tempSize = tokenCollection.size();
@@ -465,7 +466,7 @@ public class IPLoM {
       } 
     }
     
-    return (new positionCardinality(position, cardinality));
+    return (new Pair<Integer, List<Integer>>(position, cardinality));
   }
   
   /* ----------------------------------------------------------------------------------- */
@@ -482,10 +483,10 @@ public class IPLoM {
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
       ArrayList<ArrayList<String>> partitionIn = entry.getValue();
       Integer tokenCount = (Integer) entry.getKey().get(0);
-      positionPair tempPair = determineP1P2(partitionIn, tokenCount);
+      Pair<Integer, Integer> tempPair = determineP1P2(partitionIn, tokenCount);
       
       
-      
+      // TODO
       
       
       
@@ -517,7 +518,7 @@ public class IPLoM {
   /**
    * Determine positions P1 and P2
    */
-  private positionPair determineP1P2(ArrayList<ArrayList<String>> partitionIn, Integer tokenCount) {
+  private Pair<Integer, Integer> determineP1P2(ArrayList<ArrayList<String>> partitionIn, Integer tokenCount) {
     
     if (tokenCount > 2) {
       
@@ -528,25 +529,25 @@ public class IPLoM {
       if (clusterGoodness < clusterGoodnessThreshold) {
         return getMappingPositions(partitionIn, tokenCount);
       } else {
-        return (new positionPair()); 
+        return (new Pair<>(0, 0)); 
       }
     } else if (tokenCount == 2) {
-      return (new positionPair(0 ,1));
+      return (new Pair<>(0, 1));
     } else {
-      return (new positionPair());
+      return (new Pair<>(0, 0));
     }
     
   }
   
   
-  private positionPair getMappingPositions(ArrayList<ArrayList<String>> partitionIn, Integer tokenCount) {
+  private Pair<Integer, Integer> getMappingPositions(ArrayList<ArrayList<String>> partitionIn, Integer tokenCount) {
+    
+    // TODO
     
     
     
     
-    
-    
-    return (new positionPair());
+    return (new Pair<>(0, 0));
     
   }
   
