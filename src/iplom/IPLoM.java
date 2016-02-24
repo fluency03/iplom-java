@@ -41,10 +41,10 @@ public class IPLoM {
   private double partitionSupportThreshold = 0.05;
   
   /**
-   * Define the cluster goodness threshold 0.3 ~ 0.6
-   * Default: 0.4
+   * Define the cluster goodness threshold
+   * Default: 0.8
    */
-  private double clusterGoodnessThreshold = 0.4;
+  private double clusterGoodnessThreshold = 0.8;
   
   /**
    * Define the upper bound (>0.5) and lower bound (<0.5)
@@ -126,9 +126,7 @@ public class IPLoM {
     this.upperBound = upperBound;
   }
   
-  /*
-   * ------------------------------------------------------------------
-   */
+  /* ----------------------------------------------------------------------------------- */
   
   /**
    * Read the log file by lines
@@ -184,6 +182,7 @@ public class IPLoM {
 	  return tokens.countTokens();
 	}
 
+  /* ----------------------------------------------------------------------------------- */
   
 	/**
 	 * Partition the log messages based on the #tokens
@@ -247,6 +246,75 @@ public class IPLoM {
     }
   }
   
+  /* ----------------------------------------------------------------------------------- */
+  
+  /**
+   * Pair of a token and its position
+   */
+  private class tokenPositionPair {
+    private String token = "";
+    private Integer position = 0;
+    
+    public tokenPositionPair() {}
+    
+    public tokenPositionPair(String token, Integer position){
+        this.token = token;
+        this.position = position;
+    }
+    
+    public String getToken(){ return token; }
+    public Integer getPosition(){ return position; }
+    
+    public void setToken(String token){ this.token = token; }
+    public void setPosition(Integer position){ this.position = position; }
+  }
+  
+  
+  /**
+   * Pair of positions
+   */
+  private class positionPair {
+    private Integer p1 = 0;
+    private Integer p2 = 0;
+    
+    public positionPair() {}
+    
+    public positionPair(Integer p1, Integer p2){
+        this.p1 = p1;
+        this.p2 = p2;
+    }
+    
+    public Integer getP1(){ return p1; }
+    public Integer getP2(){ return p2; }
+    
+    public void setP1(Integer p1){ this.p1 = p1; }
+    public void setP2(Integer p2){ this.p2 = p2; }
+  }
+  
+  
+  /**
+   * Position chosen and cardinality list of a partition
+   */
+  private class positionCardinality {
+    private Integer position;
+    private List<Integer> cardinality;
+    
+    public positionCardinality() { }
+    
+    public positionCardinality(Integer position, List<Integer> cardinality) { 
+      this.position = position;
+      this.cardinality = cardinality;
+    }
+    
+    public Integer getPosition() { return position; }
+    public List<Integer> getCardinality() { return cardinality; }
+    
+    public void setPosition(Integer position) { this.position = position; }
+    public void setCardinality(List<Integer> cardinality) { this.cardinality = cardinality; }
+    
+  }
+  
+  /* ----------------------------------------------------------------------------------- */
   
   /**
    * Partition each of the partitions with same token sizes based on the token positions
@@ -307,16 +375,16 @@ public class IPLoM {
        * Reason for putting it here instead of merging it with the above for-loop:
        * Merging with above for-loop adding lots of computation, when loop is rolling
        */
-      int choosenPosition = positionWithLowestCardinality(tokenCollection).getPosition();
+      int chosenPosition = positionWithLowestCardinality(tokenCollection).getPosition();
       //out.println("Position with lowest cardinality: " + choosenPosition);
+      tokenPositionPair tokenPosition = new tokenPositionPair("", chosenPosition);
       
       for (ArrayList<String> logMatrix: matirxBySize.get(tempSize)) {
-        String key = logMatrix.get(choosenPosition);
+        String key = logMatrix.get(chosenPosition);
         ArrayList<Object> keyArray = new ArrayList<>();
         keyArray.add(tempSize);
-        HashMap<String, Integer> pair = new HashMap<>();
-        pair.put(key, choosenPosition);
-        keyArray.add(pair);
+        tokenPosition.setToken(key);
+        keyArray.add(tokenPosition);
         
         if (!partitionByPosition.containsKey(keyArray)){
           partitionByPosition.put(keyArray, new ArrayList<ArrayList<String>>());
@@ -368,30 +436,9 @@ public class IPLoM {
    */
   private void printPartitionsByPosition(Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition) {
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
-      out.println(entry.getKey().toString() + entry.getValue());
+      out.println(entry.getKey().get(0) + " " + ((tokenPositionPair)entry.getKey().get(1)).getToken() + " "
+          + ((tokenPositionPair)entry.getKey().get(1)).getPosition() + " " + entry.getValue());
     }
-  }
-  
-  /**
-   * Position chosen and cardinality list of a partition
-   */
-  private class positionCardinality {
-    private Integer position;
-    private List<Integer> cardinality;
-    
-    public positionCardinality() { }
-    
-    public positionCardinality(Integer position, List<Integer> cardinality) { 
-      this.position = position;
-      this.cardinality = cardinality;
-    }
-    
-    public Integer getPosition() { return position; }
-    public List<Integer> getCardinality() { return cardinality; }
-    
-    public void setPosition(Integer position) { this.position = position; }
-    public void setCardinality(List<Integer> cardinality) { this.cardinality = cardinality; }
-    
   }
   
   
@@ -421,6 +468,7 @@ public class IPLoM {
     return (new positionCardinality(position, cardinality));
   }
   
+  /* ----------------------------------------------------------------------------------- */
   
   /**
    * Partition by search bijection
@@ -460,26 +508,7 @@ public class IPLoM {
   }
   
   
-  /**
-   * Pair of positions
-   */
-  private class positionPair {
-    private Integer p1 = 0;
-    private Integer p2 = 0;
-    
-    public positionPair() {}
-    
-    public positionPair(Integer p1, Integer p2){
-        this.p1 = p1;
-        this.p2 = p2;
-    }
-    
-    public Integer getP1(){ return p1; }
-    public Integer getP2(){ return p2; }
-    
-    public void setP1(Integer p1){ this.p1 = p1; }
-    public void setP2(Integer p2){ this.p2 = p2; }
-  }
+
   
   
   
