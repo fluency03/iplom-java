@@ -10,9 +10,11 @@ package iplom;
 
 public class Pair<L,R> {
 
-  private L left;
-  private R right;
+  private L left = null;
+  private R right = null;
 
+  public Pair() {}
+  
   public Pair(L left, R right) {
     this.left = left;
     this.right = right;
