@@ -331,9 +331,7 @@ public class IPLoM {
       
       
     }
-    /*
-     * For each of the partition divided based on token size
-     */
+
     
     /* -------------------- For debugging ---------------------- */
     printPartitionsByPosition(partitionByPosition);
