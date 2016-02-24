@@ -475,6 +475,8 @@ public class IPLoM {
    */
   public void partitionByTokenBijection() {
     
+    out.println("Partition by token bijection.");
+    
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition = partitionByTokenPosition();
     
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
