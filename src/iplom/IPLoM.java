@@ -36,28 +36,37 @@ public class IPLoM {
   
   /**
    * Define the partition support threshold
-   * Default: 8
+   * Default: 0.05
    */
-  private Integer partitionSupportThreshold = 8;
+  private double partitionSupportThreshold = 0.05;
+  
+  /**
+   * Define the cluster goodness 0.3 ~ 0.6
+   * Default: 0.4
+   */
+  private double clusterGoodness = 0.4;
+  
+  /**
+   * Define the upper bound (>0.5) and lower bound (<0.5)
+   * Default: upperBound = 0.8 | lowerBound = 0.2
+   */
+  private double upperBound = 0.8;
+  private double lowerBound = 0.2;
   
   /**
    * Define the source file name (path)
    */
-  private File sourceFile;
+  private File sourceFile = null;
   
   
   /** -----------------------------------------------
    * Constructors
    * ------------------------------------------------
    */
-  public IPLoM () { 
-    this.sourceFile = null;
-    //partitionsBySize = new HashMap<Integer, ArrayList<String>>();
-  }
+  public IPLoM () { }
   
   public IPLoM (String fileName) {
     this.sourceFile = new File(fileName);
-    //partitionsBySize = new HashMap<Integer, ArrayList<String>>();
   }
   
   /**
@@ -82,10 +91,39 @@ public class IPLoM {
   }
   
   /**
-   * Set the log file
+   * Set the partition support threshold
    */
-  public void setThreshold(Integer threshold) {
+  public void setThreshold(double threshold) {
     this.partitionSupportThreshold = threshold;
+  }
+  
+  /**
+   * Set the cluster goodness
+   */
+  public void setClusterGoodness(double goodness) {
+    this.clusterGoodness = goodness;
+  }
+  
+  /**
+   * Set upper bound
+   */
+  public void setUpperBound(double upperBound) {
+    this.upperBound = upperBound;
+  }
+  
+  /**
+   * Set lower bound
+   */
+  public void setLowerBound(double lowerBound) {
+    this.lowerBound = lowerBound;
+  }
+  
+  /**
+   * Set both the lower and upper bounds
+   */
+  public void setBounds(double lowerBound, double upperBound) {
+    this.lowerBound = lowerBound;
+    this.upperBound = upperBound;
   }
   
   /*
@@ -163,6 +201,8 @@ public class IPLoM {
       //int currentLine = 1;
       int tokenSize = 0;
       while ((tempString = reader.readLine()) != null) {
+        // Remove the time stamp and server name
+        //tempString = tempString.substring(21, tempString.length());
         tokenSize = countTokenSize(tempString);
         if (partitionsBySize.containsKey(tokenSize)) {
           partitionsBySize.get(tokenSize).add(tempString);
@@ -209,7 +249,7 @@ public class IPLoM {
    * Partition each of the partitions with same token sizes based on the token positions
    * @param 
    */
-  public Map<Integer, ArrayList<Object>> partitionByTokenPosition() {    
+  public Map<Integer, Map<String, ? extends Object>> partitionByTokenPosition() {    
     
     out.println("Partition by token position.");
     
@@ -257,25 +297,19 @@ public class IPLoM {
         //out.println(logArray[1]);
         matirxBySize.get(tempSize).add(logArray);
       }
-      /* ---------- For debugging ------------ */
+      /* -------------------- For debugging ---------------------- */
       //printTokenCollection(tokenCollection);
-      /* ---------- For debugging ------------ */
+      /* -------------------- For debugging ---------------------- */
       
       /*
-       * Calculate the partitioning position
+       * ----------- Calculate the partitioning position ----------- 
        * Reason for putting it here instead of merging it with the above for-loop:
        * Merging with above for-loop adding lots of computation, when loop is rolling
        */
       int choosenPosition = positionWithLowestCardinality(tokenCollection);
-      out.println("Position with lowest cardinality: " + choosenPosition);
+      //out.println("Position with lowest cardinality: " + choosenPosition);
       
       Map<String, ArrayList<Object>> partitionByTokenPosition = new HashMap<String, ArrayList<Object>>();
-      //Map<String, Object> tokensAtPosition = tokenCollection.get(choosenPosition);
-      //for (String tempKey: tokensAtPosition.keySet()) {
-        //out.println("Toekn: " + tempKey);
-        //partitionByTokenPosition.put(tempKey, new ArrayList<Object>());
-      //}
-      //out.println("partitionByPosition: " + partitionByPosition);
       for (String[] logMatrix: matirxBySize.get(tempSize)) {
         String key = logMatrix[choosenPosition];
         if (!partitionByTokenPosition.containsKey(key)){
@@ -284,10 +318,15 @@ public class IPLoM {
         partitionByTokenPosition.get(key).add(logMatrix);
       }
       
+      /**
+       * TODO: PST???
+       * double partitionSupportRatio = 1.0;
+       */
       
       
+
       partitionByPosition.put(tempSize, partitionByTokenPosition);
-      
+
       // TODO: how to do the partitioning ITERATIVELY!!!
       
       
@@ -296,12 +335,12 @@ public class IPLoM {
      * For each of the partition divided based on token size
      */
     
-    /* ---------- For debugging ------------ */
+    /* -------------------- For debugging ---------------------- */
     printPartitionsByPosition(partitionByPosition);
     //out.println(matirxBySize);
-    /* ---------- For debugging ------------ */
-    
-    return partitionsBySize;
+    /* -------------------- For debugging ---------------------- */
+
+    return partitionByPosition;
     
   }
   
@@ -355,7 +394,29 @@ public class IPLoM {
   }
   
   
-  
+  /**
+   * Partition by search bijection
+   */
+  public void partitionByBijection() {
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  }
   
   
   
