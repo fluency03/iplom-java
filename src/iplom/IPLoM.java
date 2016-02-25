@@ -281,20 +281,8 @@ public class IPLoM {
         for (int i = 0; i < tempSize; i++) {
           String oneToken = oneLogTokens.nextToken();
           logArray.add(oneToken); 
-          
           HashMap<String, Integer> logEntry = tokenCollection.get(i);
-          
-          if (logEntry.containsKey(oneToken)) {
-            // logEntry.get(oneToken) ++; // TODO: this causes error
-            // TODO: I want to simplify this
-            Integer tempValue = logEntry.get(oneToken);
-            tempValue++;
-            logEntry.remove(oneToken);
-            logEntry.put(oneToken, tempValue);
-          } else {
-            logEntry.put(oneToken, 1);
-          }
-
+          logEntry.put(oneToken, logEntry.containsKey(oneToken) ? logEntry.get(oneToken) + 1 : 1);
         }
         matirxBySize.get(tempSize).add(logArray);
       }
@@ -404,6 +392,7 @@ public class IPLoM {
   
   /**
    * Determine the token collection information of a partition
+   * TODO: need to be tested
    */
   private List<HashMap<String, Integer>> tokenCollection(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partition){
     
@@ -418,18 +407,7 @@ public class IPLoM {
       for (int i = 0; i < tempSize; i++) {
         String oneToken = logArray.get(i);
         HashMap<String, Integer> logEntry = tokenCollection.get(i);
-        
-        if (logEntry.containsKey(oneToken)) {
-          // logEntry.get(oneToken) ++; // TODO: this causes error
-          // TODO: I want to simplify this
-          Integer tempValue = logEntry.get(oneToken);
-          tempValue++;
-          logEntry.remove(oneToken);
-          logEntry.put(oneToken, tempValue);
-        } else {
-          logEntry.put(oneToken, 1);
-        }
-
+        logEntry.put(oneToken, logEntry.containsKey(oneToken) ? logEntry.get(oneToken) + 1 : 1);
       }
     }
     
