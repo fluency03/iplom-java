@@ -379,12 +379,12 @@ public class IPLoM {
    * @param 
    * List<HashMap<String, Integer>> tokenCollection
    */
-  private Pair<Integer, List<Integer>> positionCardinality(List<HashMap<String, Integer>> tokenCollection) {
+  private Pair<Integer, ArrayList<Integer>> positionCardinality(List<HashMap<String, Integer>> tokenCollection) {
     int position = 0;
     int lowestCardinality = Integer.MAX_VALUE;
     int tempSize = tokenCollection.size();
     // Keep tack of the cardinality at each position
-    List<Integer> cardinality = new ArrayList<>();
+    ArrayList<Integer> cardinality = new ArrayList<>();
     
     for (int j = 0; j < tempSize; j++) {
       int tempCardinality = tokenCollection.get(j).size();
@@ -396,7 +396,7 @@ public class IPLoM {
       } 
     }
     
-    return (new Pair<Integer, List<Integer>>(position, cardinality));
+    return (new Pair<Integer, ArrayList<Integer>>(position, cardinality));
   }
   
   
@@ -439,8 +439,8 @@ public class IPLoM {
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition = partitionByTokenPosition();
     
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
-      ArrayList<ArrayList<String>> partitionIn = entry.getValue();
-      Integer tokenCount = (Integer) entry.getKey().get(0);
+      //ArrayList<ArrayList<String>> partitionIn = entry.getValue();
+      //Integer tokenSize = (Integer) entry.getKey().get(0);
       Pair<Integer, Integer> tempPair = determineP1P2(entry);
       
       
@@ -468,20 +468,17 @@ public class IPLoM {
     
   }
   
-  
 
-  
-  
-  
   /**
    * Determine positions P1 and P2
+   * Assume Pa is before P2
    */
-  private Pair<Integer, Integer> determineP1P2(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionIn) {
-    
-    Integer tokenCount = (Integer)partitionIn.getKey().get(0);
+  private Pair<Integer, Integer> determineP1P2(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry) {
+    List<HashMap<String, Integer>> tokenCollection = tokenCollection(partitionEntry);
+    Pair<Integer, ArrayList<Integer>> positionCardinality = positionCardinality(tokenCollection);
+    Integer tokenCount = Collections.max(positionCardinality.getRight());
     
     if (tokenCount > 2) {
-      List<HashMap<String, Integer>> tokenCollection = tokenCollection(partitionIn);
       Integer uniqueTokenCount = 0; 
       for (int i = 0; i < tokenCollection.size(); i++) {
         uniqueTokenCount = (tokenCollection.get(i).keySet().size() == 1) ? (uniqueTokenCount + 1) : uniqueTokenCount;
@@ -489,24 +486,44 @@ public class IPLoM {
       double clusterGoodness = (double)uniqueTokenCount/(double)tokenCount;
       
       if (clusterGoodness < clusterGoodnessThreshold) {
-        return getMappingPositions(partitionIn);
+        return getMappingPositions(partitionEntry, tokenCollection, tokenCount, positionCardinality);
       } else {
-        return (new Pair<>(0, 0)); 
+        return (new Pair<>(0, 0)); // TODO
       }
     } else if (tokenCount == 2) {
       return (new Pair<>(0, 1));
     } else {
-      return (new Pair<>(0, 0));
+      return (new Pair<>(0, 0)); // TODO
     }
-    
   }
   
   
-  private Pair<Integer, Integer> getMappingPositions(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionIn) {
+  /**
+   * Get the mapping positions; Assume Pa is before P2
+   * @param partitionIn, tokenCollection, tokenCount
+   * @return Pair<Integer, Integer>
+   */
+  private Pair<Integer, Integer> getMappingPositions(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry, 
+                                                        List<HashMap<String, Integer>> tokenCollection, Integer tokenCount, 
+                                                        Pair<Integer, ArrayList<Integer>> positionCardinality) {
+    Pair<Integer, Integer> tempPair = new Pair<>(0, 1);
+    Integer frequentCardinality = 1;
+    ArrayList<Integer> cardinality = positionCardinality.getRight();
+    HashMap<Integer, Integer> cardinalityCollection = new HashMap<>();
     
-    Integer tokenCount = (Integer)partitionIn.getKey().get(0);
-    Pair<Integer, Integer> tempPair = new Pair<>(0, 0);
-      
+    for (int i = 0; i < cardinality.size(); i++) {
+      Integer key = cardinality.get(i);
+      cardinalityCollection.put(key, cardinalityCollection.containsKey(key) ? (cardinalityCollection.get(key) + 1) : 1);
+//      if (key != 1){
+//        frequentCardinality = cardinalityCollection.get(key) > frequentCardinality 
+//                                ? cardinalityCollection.get(key) : frequentCardinality;
+//      }
+    }
+    //cardinalityCollection.remove(1);
+    
+    
+    
+    
       
       
     return tempPair;
