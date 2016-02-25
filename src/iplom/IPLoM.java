@@ -511,15 +511,28 @@ public class IPLoM {
     ArrayList<Integer> cardinality = positionCardinality.getRight();
     HashMap<Integer, Integer> cardinalityCollection = new HashMap<>();
     
+    /**
+     * Get the cardinality collection
+     */
     for (int i = 0; i < cardinality.size(); i++) {
       Integer key = cardinality.get(i);
       cardinalityCollection.put(key, cardinalityCollection.containsKey(key) ? (cardinalityCollection.get(key) + 1) : 1);
-//      if (key != 1){
-//        frequentCardinality = cardinalityCollection.get(key) > frequentCardinality 
-//                                ? cardinalityCollection.get(key) : frequentCardinality;
-//      }
     }
-    //cardinalityCollection.remove(1);
+    cardinalityCollection.remove(1);
+    
+    /**
+     * Get the frequentCardinality
+     */
+    Integer tempKey = 1;
+    for (Map.Entry<Integer, Integer> cardinalityEntry: cardinalityCollection.entrySet()) {
+      if (cardinalityEntry.getValue() > frequentCardinality) {
+        tempKey = cardinalityEntry.getKey();
+        frequentCardinality = cardinalityEntry.getValue();
+      } else if (cardinalityEntry.getValue() == frequentCardinality) {
+        tempKey = (cardinalityEntry.getKey() < tempKey) ? cardinalityEntry.getKey(): tempKey;
+      }
+    }
+    
     
     
     
