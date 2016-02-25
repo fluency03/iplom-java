@@ -23,7 +23,6 @@ import static java.lang.System.out;
 import java.io.*;
 import java.util.*;
 
-import sun.management.counter.LongArrayCounter;
 
 
 public class IPLoM {
@@ -302,9 +301,9 @@ public class IPLoM {
       /* -------------------- For debugging ---------------------- */
       
       /*
-       * ----------- Calculate the partitioning position ----------- 
-       * Reason for putting it here instead of merging it with the above for-loop:
-       * Merging with above for-loop adding lots of computation, when loop is rolling
+       * Calculate the partitioning position:
+       *    Reason for putting it here instead of merging it with the above for-loop:
+       *    Merging with above for-loop adding lots of computation, when loop is rolling
        */
       int chosenPosition = positionCardinality(tokenCollection).getLeft();
       //out.println("Position with lowest cardinality: " + choosenPosition);
@@ -336,6 +335,7 @@ public class IPLoM {
           }
         }
       }
+      
     }
 
     
@@ -431,47 +431,49 @@ public class IPLoM {
   /* ------------------------------------------------------------------------------------ */
   /**
    * partitionByTokenBijection
+   * TODO: need to be tested
    */
   public void partitionByTokenBijection() {
     
     out.println("Partition by token bijection.");
     
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition = partitionByTokenPosition();
+    Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByBijection = new HashMap<>();
     
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
       //ArrayList<ArrayList<String>> partitionIn = entry.getValue();
       //Integer tokenSize = (Integer) entry.getKey().get(0);
       Pair<Integer, Integer> tempPair = determineP1P2(entry);
       
-      
-      // TODO
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-    }
-    
-    
+      if (tempPair.equals(new Pair<Integer, Integer>(0, 0))) {
+        // TODO
+      } else {
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
 
-    
-    
+    }
+
   }
   
 
   /**
    * Determine positions P1 and P2
    * Assume Pa is before P2
+   * TODO: need to be tested
    */
   private Pair<Integer, Integer> determineP1P2(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry) {
     List<HashMap<String, Integer>> tokenCollection = tokenCollection(partitionEntry);
@@ -488,12 +490,12 @@ public class IPLoM {
       if (clusterGoodness < clusterGoodnessThreshold) {
         return getMappingPositions(partitionEntry, tokenCollection, tokenCount, positionCardinality);
       } else {
-        return (new Pair<>(0, 0)); // TODO
+        return (new Pair<Integer, Integer>(0, 0)); // TODO
       }
     } else if (tokenCount == 2) {
-      return (new Pair<>(0, 1));
+      return (new Pair<Integer, Integer>(0, 1));
     } else {
-      return (new Pair<>(0, 0)); // TODO
+      return (new Pair<Integer, Integer>(0, 0)); // TODO
     }
   }
   
@@ -502,6 +504,7 @@ public class IPLoM {
    * Get the mapping positions; Assume Pa is before P2
    * @param partitionIn, tokenCollection, tokenCount
    * @return Pair<Integer, Integer>
+   * TODO: need to be tested
    */
   private Pair<Integer, Integer> getMappingPositions(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry, 
                                                         List<HashMap<String, Integer>> tokenCollection, Integer tokenCount, 
@@ -549,6 +552,12 @@ public class IPLoM {
     return tempPair;
     
   }
+  
+  
+  
+  
+  
+  
   
   
   
