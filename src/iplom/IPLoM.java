@@ -59,7 +59,8 @@ public class IPLoM {
   private File sourceFile = null;
   
   
-  /** -----------------------------------------------
+  /** 
+   * ------------------------------------------------
    * Constructors
    * ------------------------------------------------
    */
@@ -295,7 +296,7 @@ public class IPLoM {
        * Reason for putting it here instead of merging it with the above for-loop:
        * Merging with above for-loop adding lots of computation, when loop is rolling
        */
-      int chosenPosition = positionWithLowestCardinality(tokenCollection).getLeft();
+      int chosenPosition = positionCardinality(tokenCollection).getLeft();
       //out.println("Position with lowest cardinality: " + choosenPosition);
       Pair<String, Integer> tokenPosition = new Pair<>("", chosenPosition);
       
@@ -368,16 +369,15 @@ public class IPLoM {
    * @param 
    * List<HashMap<String, Integer>> tokenCollection
    */
-  private Pair<Integer, List<Integer>> positionWithLowestCardinality(List<HashMap<String, Integer>> tokenCollection) {
+  private Pair<Integer, List<Integer>> positionCardinality(List<HashMap<String, Integer>> tokenCollection) {
     int position = 0;
     int lowestCardinality = Integer.MAX_VALUE;
     int tempSize = tokenCollection.size();
-    // Keep the cardinality at each position
+    // Keep tack of the cardinality at each position
     List<Integer> cardinality = new ArrayList<>();
     
     for (int j = 0; j < tempSize; j++) {
       int tempCardinality = tokenCollection.get(j).size();
-      // Keep the cardinality at each position
       cardinality.add(tempCardinality);
       
       if (tempCardinality < lowestCardinality) {
