@@ -51,6 +51,34 @@ public class Test {
     /* ------------- Print out the running time ------------- */
     out.println("Running Time: " + (endTime - startTime) + " ms");
     /* ------------- Print out the running time ------------- */
+    
+    
+    
+    int[] arr1 = new int[]{1, 2, 3};
+    int[] arr2 = new int[]{4, 5, 6};
+    int[] arr3 = new int[]{7, 8, 9};
+
+    int[][] arrX = new int[3][3];
+
+
+    for(int i = 0; i<3; i++){
+        for (int j = 0; j < 3; j++){
+            arrX[i][j] = arr1[i] + arr2[j]; //Dont how to resolve this       without using any "Java built-in methods"
+        }
+
+    }
+
+    for(int x = 0; x < arrX.length; x++){
+        for (int y = 0; y <arrX[x].length; y++){
+           System.out.print(arrX[x][y] + " ");
+        }
+    }
+    
+    
+    
+    
+    
+    
   }
 
 }
