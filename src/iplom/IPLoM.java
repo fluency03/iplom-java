@@ -511,7 +511,7 @@ public class IPLoM {
     ArrayList<Integer> cardinality = positionCardinality.getRight();
     HashMap<Integer, Integer> cardinalityCollection = new HashMap<>();
     
-    /**
+    /*
      * Get the cardinality collection
      */
     for (int i = 0; i < cardinality.size(); i++) {
@@ -520,7 +520,7 @@ public class IPLoM {
     }
     cardinalityCollection.remove(1);
     
-    /**
+    /*
      * Get the frequentCardinality
      */
     Integer tempKey = 1;
@@ -529,16 +529,23 @@ public class IPLoM {
         tempKey = cardinalityEntry.getKey();
         frequentCardinality = cardinalityEntry.getValue();
       } else if (cardinalityEntry.getValue() == frequentCardinality) {
+        /* if more than one frequent value, choose the one with lower token count*/
         tempKey = (cardinalityEntry.getKey() < tempKey) ? cardinalityEntry.getKey(): tempKey;
       }
     }
     
-    
-    
-    
-    
-      
-      
+    /*
+     * Set the P1 and P2
+     */
+    Integer p1 = cardinality.indexOf(tempKey);
+    if (frequentCardinality > 1) {
+      tempPair.setLeft(p1);
+      tempPair.setRight(cardinality.subList(p1 + 1, cardinality.size()).indexOf(tempKey) + p1 +1);
+    } else if (frequentCardinality == 1) {
+      tempPair.setLeft(p1);
+      tempPair.setRight(p1 + 1);
+    }
+
     return tempPair;
     
   }
