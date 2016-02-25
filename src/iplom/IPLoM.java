@@ -440,45 +440,49 @@ public class IPLoM {
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition = partitionByTokenPosition();
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByBijection = new HashMap<>();
     
-    for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
-      List<HashMap<String, Integer>> tokenCollection = tokenCollection(entry);
+    for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry: partitionByPosition.entrySet()) {
+      List<HashMap<String, Integer>> tokenCollection = tokenCollection(partitionEntry);
       Pair<Integer, ArrayList<Integer>> positionCardinality = positionCardinality(tokenCollection);
       //ArrayList<ArrayList<String>> partitionIn = entry.getValue();
       //Integer tokenSize = (Integer) entry.getKey().get(0);
-      Pair<Integer, Integer> tempPair = determineP1P2(entry, tokenCollection, positionCardinality);
+      Pair<Integer, Integer> tempPair = determineP1P2(partitionEntry, tokenCollection, positionCardinality);
       
       
       if (tempPair.equals(new Pair<Integer, Integer>(0, 0))) {
-        // TODO
+        // TODO: add partition to output partition
       } else {
         HashMap<String, Integer> tokensAtP1 = tokenCollection.get(tempPair.getLeft());
         HashMap<String, Integer> tokensAtP2 = tokenCollection.get(tempPair.getRight());
         Integer splitPosition = 0;
         
-        // TODO: determine the mapping between P1 and P2
-        
-        
-        
-        
-        
-        
-        
-        if (mapping == 1-1) {
-          splitPosition = tempPair.getLeft();
-        } else if (mapping == 1-M) {
+        for (Map.Entry<String, Integer> tokenEntry: tokensAtP1.entrySet()) {
+          Integer mappingType = determineMappingType(partitionEntry, tokensAtP1, tokensAtP2);
+
+          // TODO: change: how to determine tempTokenSet
+          if (mappingType == 1) {
+            /* ------------------- mapping: 1-1 ------------------- */
+            splitPosition = tempPair.getLeft();
+          } else if (mappingType == 2) {
+            /* ------------------- mapping: 1-M ------------------- */
+            HashMap<String, Integer> tempTokenSet = new HashMap<>();
+            tempTokenSet = tokensAtP2;
+            splitPosition = (getRankPosition(tempTokenSet, mappingType) == 1) ? tempPair.getLeft() : tempPair.getRight();
+          } else if (mappingType == 3) {
+            /* ------------------- mapping: M-1 ------------------- */
+            HashMap<String, Integer> tempTokenSet = new HashMap<>();
+            tempTokenSet = tokensAtP1;
+            splitPosition = (getRankPosition(tempTokenSet, mappingType) == 2) ? tempPair.getRight() : tempPair.getLeft();
+          } else if (mappingType == 4) {
+            /* ------------------- mapping: M-M ------------------- */
+            // TODO: create tempCollection1 and tempCollection2
           
           
           
-        } else if (mapping == M-1) {
           
           
-          
-        } else if (mapping == M-M) {
-          
-          
+          }
           
         }
-        
         
         
         
@@ -583,25 +587,47 @@ public class IPLoM {
   
   
   /**
-   * Get rank position
+   * Determine the mapping type, i.e., 1-1, 1-M, M-1, or M-M
+   * TODO: determine the mapping between P1 and P2
    */
-  private Integer getRankPosition(){
+  private Integer determineMappingType(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
+                                          HashMap<String, Integer> tokensAtP1, HashMap<String, Integer> tokensAtP2) {
+    Integer mappingType = 0;
+    
+    
+    
+    
+    
+    
+    return mappingType;
+    
+  }
+  
+  
+  
+  /**
+   * Get rank position
+   * TODO: get the position rank
+   */
+  private Integer getRankPosition(HashMap<String, Integer> tempTokenSet, Integer mappingType) {
     
     Integer splitRank = 0;
+    Integer cardinalityOfSet = tempTokenSet.size();
+    Integer linesMatchSet = 0;
+    
+    // TODO: determine linesMatchSet
     
     
+    double distance = (double)cardinalityOfSet/(double)linesMatchSet;
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    if (distance <= lowerBound) {
+      splitRank = (mappingType == 2) ? 2 : 1;
+    } else if (distance >- upperBound) {
+      splitRank = (mappingType == 2) ? 1 : 2;
+    } else {
+      splitRank = (mappingType == 2) ? 1 : 2;
+    }
+
     return splitRank;
   }
   
