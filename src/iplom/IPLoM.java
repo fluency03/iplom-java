@@ -28,6 +28,10 @@ import sun.management.counter.LongArrayCounter;
 
 public class IPLoM {
 
+  /* ------------------------------------------------------------------------------------ */
+  /*                                    Elements                                          */
+  /* ------------------------------------------------------------------------------------ */
+  
   /**
    * Define the delimiter for separating a log message into tokens
    * Default: " []=:()/|\'\""
@@ -59,16 +63,18 @@ public class IPLoM {
   private File sourceFile = null;
   
   
-  /** 
-   * ------------------------------------------------
-   * Constructors
-   * ------------------------------------------------
-   */
+  /* ------------------------------------------------------------------------------------ */
+  /*                                  Constructors                                        */
+  /* ------------------------------------------------------------------------------------ */
   public IPLoM () { }
   
   public IPLoM (String fileName) {
     this.sourceFile = new File(fileName);
   }
+  
+  /* ------------------------------------------------------------------------------------ */
+  /*                                    Methods                                           */
+  /* ------------------------------------------------------------------------------------ */
   
   /**
    * Set the log file
@@ -247,11 +253,15 @@ public class IPLoM {
     }
   }
   
-  /* ----------------------------------------------------------------------------------- */
   
+  
+  /* ------------------------------------------------------------------------------------ */
+  /*                          Partition by token position                                 */
+  /* ------------------------------------------------------------------------------------ */
   /**
-   * Partition each of the partitions with same token sizes based on the token positions
-   * @param 
+   * partitionByTokenPosition
+   * @return 
+   * Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition
    */
   public Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByTokenPosition() {    
     
@@ -415,10 +425,12 @@ public class IPLoM {
   }
   
   
-  /* ----------------------------------------------------------------------------------- */
   
+  /* ------------------------------------------------------------------------------------ */
+  /*                          Partition by search bijection                               */
+  /* ------------------------------------------------------------------------------------ */
   /**
-   * Partition by search bijection
+   * partitionByTokenBijection
    */
   public void partitionByTokenBijection() {
     
