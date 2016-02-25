@@ -441,15 +441,43 @@ public class IPLoM {
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByBijection = new HashMap<>();
     
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
+      List<HashMap<String, Integer>> tokenCollection = tokenCollection(entry);
+      Pair<Integer, ArrayList<Integer>> positionCardinality = positionCardinality(tokenCollection);
       //ArrayList<ArrayList<String>> partitionIn = entry.getValue();
       //Integer tokenSize = (Integer) entry.getKey().get(0);
-      Pair<Integer, Integer> tempPair = determineP1P2(entry);
+      Pair<Integer, Integer> tempPair = determineP1P2(entry, tokenCollection, positionCardinality);
+      
       
       if (tempPair.equals(new Pair<Integer, Integer>(0, 0))) {
         // TODO
       } else {
-        //
+        HashMap<String, Integer> tokensAtP1 = tokenCollection.get(tempPair.getLeft());
+        HashMap<String, Integer> tokensAtP2 = tokenCollection.get(tempPair.getRight());
+        Integer splitPosition = 0;
         
+        // TODO: determine the mapping between P1 and P2
+        
+        
+        
+        
+        
+        
+        
+        if (mapping == 1-1) {
+          splitPosition = tempPair.getLeft();
+        } else if (mapping == 1-M) {
+          
+          
+          
+        } else if (mapping == M-1) {
+          
+          
+          
+        } else if (mapping == M-M) {
+          
+          
+          
+        }
         
         
         
@@ -475,9 +503,9 @@ public class IPLoM {
    * Assume Pa is before P2
    * TODO: need to be tested
    */
-  private Pair<Integer, Integer> determineP1P2(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry) {
-    List<HashMap<String, Integer>> tokenCollection = tokenCollection(partitionEntry);
-    Pair<Integer, ArrayList<Integer>> positionCardinality = positionCardinality(tokenCollection);
+  private Pair<Integer, Integer> determineP1P2(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
+                                                  List<HashMap<String, Integer>> tokenCollection, 
+                                                  Pair<Integer, ArrayList<Integer>> positionCardinality) {
     Integer tokenCount = Collections.max(positionCardinality.getRight());
     
     if (tokenCount > 2) {
@@ -490,12 +518,12 @@ public class IPLoM {
       if (clusterGoodness < clusterGoodnessThreshold) {
         return getMappingPositions(partitionEntry, tokenCollection, tokenCount, positionCardinality);
       } else {
-        return (new Pair<Integer, Integer>(0, 0)); // TODO
+        return (new Pair<Integer, Integer>(0, 0)); 
       }
     } else if (tokenCount == 2) {
       return (new Pair<Integer, Integer>(0, 1));
     } else {
-      return (new Pair<Integer, Integer>(0, 0)); // TODO
+      return (new Pair<Integer, Integer>(0, 0)); 
     }
   }
   
@@ -554,12 +582,31 @@ public class IPLoM {
   }
   
   
+  /**
+   * Get rank position
+   */
+  private Integer getRankPosition(){
+    
+    Integer splitRank = 0;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    return splitRank;
+  }
   
   
-  
-  
-  
-  
+ 
   
   
   
