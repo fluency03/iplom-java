@@ -73,7 +73,7 @@ public class IPLoM {
   }
   
   /* ------------------------------------------------------------------------------------ */
-  /*                                    Methods                                           */
+  /*                                    Methods TODO: optimize                            */
   /* ------------------------------------------------------------------------------------ */
   
   /**
@@ -293,7 +293,7 @@ public class IPLoM {
           String oneToken = oneLogTokens.nextToken();
           logArray.add(oneToken); 
           HashMap<String, Integer> logEntry = tokenCollection.get(i);
-          logEntry.put(oneToken, logEntry.containsKey(oneToken) ? logEntry.get(oneToken) + 1 : 1);
+          logEntry.put(oneToken, logEntry.containsKey(oneToken) ? (logEntry.get(oneToken) + 1) : 1);
         }
         matirxBySize.get(tempSize).add(logArray);
       }
@@ -417,7 +417,7 @@ public class IPLoM {
       for (int i = 0; i < tempSize; i++) {
         String oneToken = logArray.get(i);
         HashMap<String, Integer> logEntry = tokenCollection.get(i);
-        logEntry.put(oneToken, logEntry.containsKey(oneToken) ? logEntry.get(oneToken) + 1 : 1);
+        logEntry.put(oneToken, logEntry.containsKey(oneToken) ? (logEntry.get(oneToken) + 1) : 1);
       }
     }
     
@@ -441,7 +441,7 @@ public class IPLoM {
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
       ArrayList<ArrayList<String>> partitionIn = entry.getValue();
       Integer tokenCount = (Integer) entry.getKey().get(0);
-      Pair<Integer, Integer> tempPair = determineP1P2(partitionIn, tokenCount);
+      Pair<Integer, Integer> tempPair = determineP1P2(entry);
       
       
       // TODO
@@ -476,16 +476,20 @@ public class IPLoM {
   /**
    * Determine positions P1 and P2
    */
-  private Pair<Integer, Integer> determineP1P2(ArrayList<ArrayList<String>> partitionIn, Integer tokenCount) {
+  private Pair<Integer, Integer> determineP1P2(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionIn) {
+    
+    Integer tokenCount = (Integer)partitionIn.getKey().get(0);
     
     if (tokenCount > 2) {
-      
-      Integer count = 1; //TODO
-      
-      double clusterGoodness = (double)count/(double)tokenCount;
+      List<HashMap<String, Integer>> tokenCollection = tokenCollection(partitionIn);
+      Integer uniqueTokenCount = 0; 
+      for (int i = 0; i < tokenCollection.size(); i++) {
+        uniqueTokenCount = (tokenCollection.get(i).keySet().size() == 1) ? (uniqueTokenCount + 1) : uniqueTokenCount;
+      }
+      double clusterGoodness = (double)uniqueTokenCount/(double)tokenCount;
       
       if (clusterGoodness < clusterGoodnessThreshold) {
-        return getMappingPositions(partitionIn, tokenCount);
+        return getMappingPositions(partitionIn);
       } else {
         return (new Pair<>(0, 0)); 
       }
@@ -498,14 +502,14 @@ public class IPLoM {
   }
   
   
-  private Pair<Integer, Integer> getMappingPositions(ArrayList<ArrayList<String>> partitionIn, Integer tokenCount) {
+  private Pair<Integer, Integer> getMappingPositions(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionIn) {
     
-    // TODO
-    
-    
-    
-    
-    return (new Pair<>(0, 0));
+    Integer tokenCount = (Integer)partitionIn.getKey().get(0);
+    Pair<Integer, Integer> tempPair = new Pair<>(0, 0);
+      
+      
+      
+    return tempPair;
     
   }
   
