@@ -23,6 +23,8 @@ import static java.lang.System.out;
 import java.io.*;
 import java.util.*;
 
+import sun.management.counter.LongArrayCounter;
+
 
 public class IPLoM {
 
@@ -34,22 +36,22 @@ public class IPLoM {
   
   /**
    * Define the partition support threshold
-   * Default: 0.05
+   * Default: 0.00
    */
-  private double partitionSupportThreshold = 0.05;
+  private double partitionSupportThreshold = 0;
   
   /**
    * Define the cluster goodness threshold
-   * Default: 0.8
+   * Default: 0.34
    */
-  private double clusterGoodnessThreshold = 0.8;
+  private double clusterGoodnessThreshold = 0.34;
   
   /**
    * Define the upper bound (>0.5) and lower bound (<0.5)
-   * Default: upperBound = 0.8 | lowerBound = 0.2
+   * Default: upperBound = 0.9 | lowerBound = 0.1
    */
-  private double upperBound = 0.8;
-  private double lowerBound = 0.2;
+  private double upperBound = 0.9;
+  private double lowerBound = 0.1;
   
   /**
    * Define the source file name (path)
@@ -398,6 +400,42 @@ public class IPLoM {
     
     return (new Pair<Integer, List<Integer>>(position, cardinality));
   }
+  
+  
+  /**
+   * Determine the token collection information of a partition
+   */
+  private List<HashMap<String, Integer>> tokenCollection(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partition){
+    
+    Integer tempSize = (Integer)(partition.getKey()).get(0);
+    List<HashMap<String, Integer>> tokenCollection = new ArrayList<>(tempSize);
+    
+    while(tokenCollection.size() < tempSize) {
+      tokenCollection.add(new HashMap<String, Integer>());
+    }
+    
+    for (ArrayList<String> logArray: partition.getValue()) {
+      for (int i = 0; i < tempSize; i++) {
+        String oneToken = logArray.get(i);
+        HashMap<String, Integer> logEntry = tokenCollection.get(i);
+        
+        if (logEntry.containsKey(oneToken)) {
+          // logEntry.get(oneToken) ++; // TODO: this causes error
+          // TODO: I want to simplify this
+          Integer tempValue = logEntry.get(oneToken);
+          tempValue++;
+          logEntry.remove(oneToken);
+          logEntry.put(oneToken, tempValue);
+        } else {
+          logEntry.put(oneToken, 1);
+        }
+
+      }
+    }
+    
+    return tokenCollection;
+  }
+  
   
   /* ----------------------------------------------------------------------------------- */
   
