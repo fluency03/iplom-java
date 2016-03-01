@@ -1,0 +1,3 @@
+        //ArrayList<ArrayList<String>> tempPartition = partitionByPosition.get(keyArray);
+        //tempPartition.add(logMatrix);
+        //partitionByPosition.put(keyArray, tempPartition);
