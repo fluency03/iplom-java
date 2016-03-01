@@ -210,7 +210,7 @@ public class IPLoM {
          * Remove the time stamp and server name here
          * TODO: other more intelligent way to get rid of time, server name, <number>, etc.
          */
-        //tempString = tempString.substring(21, tempString.length());
+        tempString = tempString.substring(16, tempString.length());
         tokenSize = tokenSizeOfString(tempString);
         if (partitionsBySize.containsKey(tokenSize)) {
           partitionsBySize.get(tokenSize).add(tempString);
@@ -275,7 +275,7 @@ public class IPLoM {
      */
     for (Map.Entry<Integer, ArrayList<String>> partitionEntry: partitionsBySize.entrySet()) {
       
-      out.println(partitionEntry.getKey() + " " + partitionEntry.getValue().size() + " " + partitionEntry.getValue());
+      //out.println(partitionEntry.getKey() + " " + partitionEntry.getValue().size() + " " + partitionEntry.getValue());
       Integer tempSize = partitionEntry.getKey();
       matirxBySize.put(tempSize, new ArrayList<ArrayList<String>>());
       List<HashMap<String, Integer>> tokenCollection = new ArrayList<>(tempSize);
@@ -300,6 +300,11 @@ public class IPLoM {
       // printTokenCollection(tokenCollection);
       /* -------------------- For debugging ---------------------- */
       
+      
+      
+      
+      
+      
       /*
        * Calculate the partitioning position:
        *    Reason for putting it here instead of merging it with the above for-loop:
@@ -307,21 +312,29 @@ public class IPLoM {
        */
       int chosenPosition = positionCardinality(tokenCollection).getLeft();
       //out.println("Position with lowest cardinality: " + choosenPosition);
-      Pair<String, Integer> tokenPosition = new Pair<>("", chosenPosition);
+      //Pair<String, Integer> tokenPosition = new Pair<>("", chosenPosition);
       
+      out.println(tempSize);
       for (ArrayList<String> logMatrix: matirxBySize.get(tempSize)) {
         String key = logMatrix.get(chosenPosition);
         ArrayList<Object> keyArray = new ArrayList<>();
         keyArray.add(tempSize);
-        tokenPosition.setLeft(key);
+        Pair<String, Integer> tokenPosition = new Pair<>(key, chosenPosition);
+        //tokenPosition.setLeft(key);
         keyArray.add(tokenPosition);
-        
+          
         if (!partitionByPosition.containsKey(keyArray)){
+          //out.println(tempSize);
+          out.println(((Pair)keyArray.get(1)).getLeft());
           partitionByPosition.put(keyArray, new ArrayList<ArrayList<String>>());
         }
         partitionByPosition.get(keyArray).add(logMatrix);
       }
 
+      
+      
+      
+      
       /*
        * Check PST (Partition Support Threshold)
        */
@@ -337,7 +350,8 @@ public class IPLoM {
       }
       
     }
-
+    
+    
     
     /* -------------------- For debugging ---------------------- */
     printPartitionsByPosition(partitionByPosition);
@@ -360,18 +374,31 @@ public class IPLoM {
     }
   }
   
+  
+  
+  
+  
   /**
    * Print the partitions by position, mainly for debugging
    * @param 
-   * Map<Integer, Map<String, ? extends Object>> partitionByPosition
+   * Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition
    */
   @SuppressWarnings("rawtypes")
   private void printPartitionsByPosition(Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition) {
+    //int i = 0; // int i, for debugging
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
-      out.println(entry.getKey().get(0) + " " + ((Pair)entry.getKey().get(1)).getLeft() + " "
-          + ((Pair)entry.getKey().get(1)).getRight() + " " + entry.getValue());
+      /* if-statement for debugging */
+      ArrayList<Object> key = entry.getKey();
+      if ((Integer)key.get(0) == 8) {
+        out.println(key.get(0) + " " + ((Pair)key.get(1)).getLeft() + " " + ((Pair)key.get(1)).getRight() + " " + entry.getValue());
+        //i ++;
+      }
     }
+    //out.println(i);
   }
+  
+  
+  
   
   
   /**
@@ -390,7 +417,7 @@ public class IPLoM {
       int tempCardinality = tokenCollection.get(j).size();
       cardinality.add(tempCardinality);
       
-      if (tempCardinality < lowestCardinality) {
+      if (tempCardinality < lowestCardinality && tempCardinality > 1) {
         lowestCardinality = tempCardinality;
         position = j;
       } 
@@ -633,6 +660,16 @@ public class IPLoM {
   
   
  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
