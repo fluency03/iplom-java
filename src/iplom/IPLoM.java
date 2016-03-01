@@ -473,9 +473,9 @@ public class IPLoM {
         Integer splitPosition = 0;
         
         for (Map.Entry<String, Integer> tokenEntry: tokensSet1.entrySet()) {
-          Integer mappingType = determineMappingType(partitionEntry, tokensSet1, tokensSet2);
+          Integer mappingType = determineMappingType(partitionEntry, tokenEntry, P1, P2, tokensSet1, tokensSet2);
 
-          // TODO: change: how to determine tempTokenSet
+          
           
           if (mappingType == 1) {
             /* ------------------- mapping: 1-1 ------------------- */
@@ -483,12 +483,14 @@ public class IPLoM {
           } else if (mappingType == 2) {
             /* ------------------- mapping: 1-M ------------------- */
             HashMap<String, Integer> tempTokenSet = new HashMap<>();
+            // TODO: change: how to determine tempTokenSet
             tempTokenSet = tokensSet2;
             splitPosition = (getRankPosition(partitionEntry, tempTokenSet, mappingType, P2) == 1) ? 
                                 positionPair.getLeft() : positionPair.getRight();
           } else if (mappingType == 3) {
             /* ------------------- mapping: M-1 ------------------- */
             HashMap<String, Integer> tempTokenSet = new HashMap<>();
+            // TODO: change: how to determine tempTokenSet
             tempTokenSet = tokensSet1;
             splitPosition = (getRankPosition(partitionEntry, tempTokenSet, mappingType, P1) == 2) ? 
                                 positionPair.getRight() : positionPair.getLeft();
@@ -565,8 +567,17 @@ public class IPLoM {
    * TODO: determine the mapping between P1 and P2
    */
   private Integer determineMappingType(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
+                                          Map.Entry<String, Integer> tokenEntry, Integer P1, Integer P2,
                                           HashMap<String, Integer> tokensSet1, HashMap<String, Integer> tokensSet2) {
     Integer mappingType = 0;
+    String tempToken1 = tokenEntry.getKey();
+    HashMap<String, Integer> tempSet1 = new HashMap<>();
+    HashMap<String, Integer> tempSet2 = new HashMap<>();
+    tempSet1.put(tempToken1, 1);
+    
+    Pair<HashMap<String, Integer>, HashMap<String, Integer>> setPair 
+        = completeTokenSets(partitionEntry, P1, P2, tempSet1, tempSet2);
+    
     
     
     
@@ -575,6 +586,61 @@ public class IPLoM {
     
     return mappingType;
     
+  }
+  
+  
+  
+  /**
+   * Complete two token sets: tokenSet1, tokenSet2
+   */
+  private Pair<HashMap<String, Integer>, HashMap<String, Integer>> 
+          completeTokenSets(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
+                            Integer P1, Integer P2, HashMap<String, Integer> tokensSet1, HashMap<String, Integer> tokensSet2) {
+    Integer sizeOfSet1 = tokensSet1.size();
+    Integer sizeOfSet2 = tokensSet2.size();
+    HashMap<String, Integer> tempSet1 = tokensSet1;
+    HashMap<String, Integer> tempSet2 = tokensSet1;
+    Pair<HashMap<String, Integer>, HashMap<String, Integer>> setPair = new Pair<>();
+    
+    /*
+     * Complement the token set with less tokens
+     */
+    if (sizeOfSet1 == sizeOfSet2) {
+      /*
+       * If the size of two token sets are equal,
+       * directly return, not further recursive substitution
+       */
+      return setPair;
+    } else if (sizeOfSet1 > sizeOfSet2) {
+      /*
+       * If sizeOfSet1 > sizeOfSet2, Complement tokenSet2.
+       */
+      for (String tempToken: tempSet1.keySet()) {
+        for (ArrayList<String> logMatrix: partitionEntry.getValue()) {
+          if (logMatrix.get(P1) == tempToken) {
+            String tempToken2 = logMatrix.get(P2);
+            tempSet2.put(tempToken2, tempSet2.containsKey(tempToken2) ? tempSet2.get(tempToken2) + 1 : 1);
+          }
+        }
+      }
+
+    } else {
+      /*
+       * If sizeOfSet1 < sizeOfSet2, Complement tokenSet1.
+       */
+      for (String tempToken: tempSet2.keySet()) {
+        for (ArrayList<String> logMatrix: partitionEntry.getValue()) {
+          if (logMatrix.get(P2) == tempToken) {
+            String tempToken1 = logMatrix.get(P1);
+            tempSet1.put(tempToken1, tempSet1.containsKey(tempToken1) ? tempSet1.get(tempToken1) + 1 : 1);
+          }
+        }
+      }
+      
+    }
+
+    return this.completeTokenSets(partitionEntry, P1, P2, tempSet1, tempSet2);
+
   }
   
 
@@ -723,7 +789,7 @@ public class IPLoM {
   /**
    * Summary the log templates from each partition 
    */
-  public void logTemplate(){
+  public void dicoverLogTemplate(){
     
     
     
