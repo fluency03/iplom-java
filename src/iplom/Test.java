@@ -31,14 +31,19 @@ public class Test {
     
     
     
+    
+    
     String fileName = "/home/edghklj/workspace/github/messages.1";
     IPLoM logAnalyzer = new IPLoM(fileName);
     
-    // logAnalyzer.readByLines();
+    //logAnalyzer.readByLines();
     
     //logAnalyzer.partitionByTokenSize();
-    logAnalyzer.printSizePartition();
-    logAnalyzer.partitionByTokenPosition();
+    //logAnalyzer.printSizePartition();
+    //logAnalyzer.partitionByTokenPosition();
+    logAnalyzer.partitionByTokenBijection();
+    
+    
     
     
     
