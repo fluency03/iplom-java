@@ -564,7 +564,6 @@ public class IPLoM {
    * Determine the mapping type
    * @return Integer mappingType
    * Represented by an Integer: 1 (1-1), 2 (1-M), 3 (M-1), or 4 (M-M)
-   * TODO: determine the mapping between P1 and P2
    */
   private Integer determineMappingType(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
                                           Map.Entry<String, Integer> tokenEntry, Integer P1, Integer P2,
@@ -578,12 +577,21 @@ public class IPLoM {
     Pair<HashMap<String, Integer>, HashMap<String, Integer>> setPair 
         = completeTokenSets(partitionEntry, P1, P2, tempSet1, tempSet2);
     
+    Integer sizeOfSet1 = setPair.getLeft().size();
+    Integer sizeOfSet2 = setPair.getRight().size();
     
+    if (sizeOfSet1 == 1 && sizeOfSet2 == 1) {
+      mappingType = 1;
+    } else if (sizeOfSet1 == 1) {
+      mappingType = 2;
+    } else if (sizeOfSet2 == 1) {
+      mappingType = 3;
+    } else {
+      mappingType = 4;
+    }
     
-    
-    
-    
-    
+    // TODO ...
+
     return mappingType;
     
   }
@@ -600,7 +608,7 @@ public class IPLoM {
     Integer sizeOfSet2 = tokensSet2.size();
     HashMap<String, Integer> tempSet1 = tokensSet1;
     HashMap<String, Integer> tempSet2 = tokensSet1;
-    Pair<HashMap<String, Integer>, HashMap<String, Integer>> setPair = new Pair<>();
+    Pair<HashMap<String, Integer>, HashMap<String, Integer>> setPair = new Pair<>(tempSet1, tempSet2);
     
     /*
      * Complement the token set with less tokens
@@ -638,6 +646,8 @@ public class IPLoM {
       }
       
     }
+    
+    // TODO ...
 
     return this.completeTokenSets(partitionEntry, P1, P2, tempSet1, tempSet2);
 
