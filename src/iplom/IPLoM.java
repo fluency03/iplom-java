@@ -512,6 +512,25 @@ public class IPLoM {
 
   }
   
+  
+  
+  /**
+   * Determine the mapping type, i.e., 1-1, 1-M, M-1, or M-M
+   * TODO: determine the mapping between P1 and P2
+   */
+  private Integer determineMappingType(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
+                                          HashMap<String, Integer> tokensAtP1, HashMap<String, Integer> tokensAtP2) {
+    Integer mappingType = 0;
+    
+    
+    
+    
+    
+    
+    return mappingType;
+    
+  }
+  
 
   /**
    * Determine positions P1 and P2
@@ -648,28 +667,8 @@ public class IPLoM {
   
   
   /**
-   * Determine the mapping type, i.e., 1-1, 1-M, M-1, or M-M
-   * TODO: determine the mapping between P1 and P2
-   */
-  private Integer determineMappingType(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
-                                          HashMap<String, Integer> tokensAtP1, HashMap<String, Integer> tokensAtP2) {
-    Integer mappingType = 0;
-    
-    
-    
-    
-    
-    
-    return mappingType;
-    
-  }
-  
-  
-  
-  /**
    * Get rank position
    * @return Integer splitRank: either 1 or 2
-   * TODO: get the position rank
    */
   private Integer getRankPosition(HashMap<String, Integer> tempTokenSet, Integer mappingType) {
     
@@ -696,21 +695,36 @@ public class IPLoM {
   
  
   
+  /* ------------------------------------------------------------------------------------ */
+  /*                            Step 4 - Discover log templates                           */
+  /* ------------------------------------------------------------------------------------ */
+  /**
+   * Summary the log templates from each partition 
+   */
+  public void logTemplate(){
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  }
   
   
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   
   
 
