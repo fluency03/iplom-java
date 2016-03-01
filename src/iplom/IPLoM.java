@@ -188,7 +188,9 @@ public class IPLoM {
 	  return tokens.countTokens();
 	}
 
-  /* ----------------------------------------------------------------------------------- */
+  /* ------------------------------------------------------------------------------------ */
+  /*                          Step 1 - Partition by token size                            */
+  /* ------------------------------------------------------------------------------------ */
   
 	/**
 	 * Partition the log messages based on the #tokens
@@ -204,14 +206,13 @@ public class IPLoM {
       reader = new BufferedReader(new FileReader(this.sourceFile));
       String tempString = null;
       //int currentLine = 1;
-      int tokenSize = 0;
       while ((tempString = reader.readLine()) != null) {
         /* 
          * Remove the time stamp and server name here
          * TODO: other more intelligent way to get rid of time, server name, <number>, etc.
          */
         tempString = tempString.substring(16, tempString.length());
-        tokenSize = tokenSizeOfString(tempString);
+        Integer tokenSize = tokenSizeOfString(tempString);
         if (partitionsBySize.containsKey(tokenSize)) {
           partitionsBySize.get(tokenSize).add(tempString);
         } else {
@@ -255,7 +256,7 @@ public class IPLoM {
   
   
   /* ------------------------------------------------------------------------------------ */
-  /*                          Partition by token position                                 */
+  /*                        Step 2 - Partition by token position                          */
   /* ------------------------------------------------------------------------------------ */
   /**
    * partitionByTokenPosition
@@ -300,11 +301,7 @@ public class IPLoM {
       // printTokenCollection(tokenCollection);
       /* -------------------- For debugging ---------------------- */
       
-      
-      
-      
-      
-      
+
       /*
        * Calculate the partitioning position:
        *    Reason for putting it here instead of merging it with the above for-loop:
@@ -312,29 +309,23 @@ public class IPLoM {
        */
       int chosenPosition = positionCardinality(tokenCollection).getLeft();
       //out.println("Position with lowest cardinality: " + choosenPosition);
-      //Pair<String, Integer> tokenPosition = new Pair<>("", chosenPosition);
       
-      out.println(tempSize);
+      //out.println(tempSize);
       for (ArrayList<String> logMatrix: matirxBySize.get(tempSize)) {
         String key = logMatrix.get(chosenPosition);
         ArrayList<Object> keyArray = new ArrayList<>();
         keyArray.add(tempSize);
-        Pair<String, Integer> tokenPosition = new Pair<>(key, chosenPosition);
-        //tokenPosition.setLeft(key);
-        keyArray.add(tokenPosition);
+        Pair<String, Integer> tokenPositionPair = new Pair<>(key, chosenPosition);
+        keyArray.add(tokenPositionPair);
           
         if (!partitionByPosition.containsKey(keyArray)){
-          //out.println(tempSize);
-          out.println(((Pair)keyArray.get(1)).getLeft());
+          //out.println(((Pair)keyArray.get(1)).getLeft());
           partitionByPosition.put(keyArray, new ArrayList<ArrayList<String>>());
         }
         partitionByPosition.get(keyArray).add(logMatrix);
       }
+      
 
-      
-      
-      
-      
       /*
        * Check PST (Partition Support Threshold)
        */
@@ -374,10 +365,7 @@ public class IPLoM {
     }
   }
   
-  
-  
-  
-  
+
   /**
    * Print the partitions by position, mainly for debugging
    * @param 
@@ -397,10 +385,7 @@ public class IPLoM {
     //out.println(i);
   }
   
-  
-  
-  
-  
+
   /**
    * Determine the token position with lowest cardinality with respect to set of unique tokens
    * @param 
@@ -454,7 +439,7 @@ public class IPLoM {
   
   
   /* ------------------------------------------------------------------------------------ */
-  /*                          Partition by search bijection                               */
+  /*                         Step 3 - Partition by search bijection                       */
   /* ------------------------------------------------------------------------------------ */
   /**
    * partitionByTokenBijection
