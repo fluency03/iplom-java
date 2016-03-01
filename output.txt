@@ -172,4 +172,4 @@ Partition by token position.
 8 lde-imm 1 [[SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-6], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-7], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-8], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-9], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-10], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-11], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-12]]
 Partition by token bijection.
 The analyzed log file: /home/edghklj/workspace/github/messages.1
-Running Time: 300 ms
+Running Time: 314 ms
