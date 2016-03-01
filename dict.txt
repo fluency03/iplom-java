@@ -11,3 +11,8 @@ liu
 str
 int
 outlier
+kimura
+tatsuaki
+al
+et
+proactive
