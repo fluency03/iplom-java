@@ -188,6 +188,13 @@ public class IPLoM {
 	  return tokens.countTokens();
 	}
 
+	
+	
+	
+	
+	
+	
+	
   /* ------------------------------------------------------------------------------------ */
   /*                          Step 1 - Partition by token size                            */
   /* ------------------------------------------------------------------------------------ */
@@ -258,9 +265,15 @@ public class IPLoM {
   
   
   
+  
+  
+  
+  
+  
   /* ------------------------------------------------------------------------------------ */
   /*                        Step 2 - Partition by token position                          */
   /* ------------------------------------------------------------------------------------ */
+  
   /**
    * partitionByTokenPosition
    * @return 
@@ -439,11 +452,17 @@ public class IPLoM {
     return tokenCollection;
   }
   
+
+  
+  
+  
+  
   
   
   /* ------------------------------------------------------------------------------------ */
   /*                         Step 3 - Partition by search bijection                       */
   /* ------------------------------------------------------------------------------------ */
+  
   /**
    * partitionByTokenBijection
    */
@@ -786,6 +805,7 @@ public class IPLoM {
     }
     return new Pair<Integer, Integer>(frequentCardinality, cardinalityFrequency);
   }
+  
   
   
 
