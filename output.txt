@@ -6682,4 +6682,7 @@ TGC-4302
 8 lde-scaling 1 [[SC-1, lde-scaling, 17061, CR, object, for, PL-6, instantiated], [SC-1, lde-scaling, 17285, CR, object, for, PL-7, instantiated], [SC-1, lde-scaling, 17516, CR, object, for, PL-8, instantiated], [SC-1, lde-scaling, 17755, CR, object, for, PL-9, instantiated], [SC-1, lde-scaling, 18106, CR, object, for, PL-10, instantiated], [SC-1, lde-scaling, 17866, CR, object, for, PL-11, instantiated], [SC-1, lde-scaling, 17951, CR, object, for, PL-12, instantiated], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-10], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-11], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-6], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-7], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-12], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-9], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-8]]
 8 lde-imm 1 [[SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-6], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-7], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-8], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-9], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-10], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-11], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-12]]
 The analyzed log file: /home/edghklj/workspace/github/messages.1
-Running Time: 508 ms
+Running Time: 582 ms
+c 1 [1]
+b 1 [1]
+a 1 [1, 1]
