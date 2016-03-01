@@ -35,7 +35,7 @@ public class Test {
     // logAnalyzer.readByLines();
     
     //logAnalyzer.partitionByTokenSize();
-    //logAnalyzer.printSizePartition();
+    logAnalyzer.printSizePartition();
     logAnalyzer.partitionByTokenPosition();
     
     
