@@ -72,7 +72,7 @@ public class IPLoM {
   }
   
   /* ------------------------------------------------------------------------------------ */
-  /*                                    Methods TODO: optimize                            */
+  /*                                    Methods                                           */
   /* ------------------------------------------------------------------------------------ */
   
   /**
@@ -330,9 +330,10 @@ public class IPLoM {
        * Check PST (Partition Support Threshold)
        */
       for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> subPartitionEntry: partitionByPosition.entrySet()) {
-        if (subPartitionEntry.getKey().get(0) == partitionEntry.getKey()) {
+        if (subPartitionEntry.getKey().get(0) == tempSize) {
+          //out.println("Size: " + tempSize);
           double partitionSupportRatio = (double)subPartitionEntry.getValue().size()/(double)partitionEntry.getValue().size();
-          out.println(partitionSupportRatio);
+          out.println("" + partitionSupportRatio);
         
           if (partitionSupportRatio < partitionSupportThreshold) {
             // TODO: Add lines from this partition into Outlier partition
@@ -414,7 +415,6 @@ public class IPLoM {
   
   /**
    * Determine the token collection information of a partition
-   * TODO: need to be tested
    */
   private List<HashMap<String, Integer>> tokenCollection(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partition){
     
@@ -443,7 +443,6 @@ public class IPLoM {
   /* ------------------------------------------------------------------------------------ */
   /**
    * partitionByTokenBijection
-   * TODO: need to be tested
    */
   public void partitionByTokenBijection() {
     
@@ -517,26 +516,40 @@ public class IPLoM {
   /**
    * Determine positions P1 and P2
    * Assume Pa is before P2
-   * TODO: need to be tested
    */
   private Pair<Integer, Integer> determineP1P2(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
                                                   List<HashMap<String, Integer>> tokenCollection, 
                                                   Pair<Integer, ArrayList<Integer>> positionCardinality) {
-    Integer tokenCount = Collections.max(positionCardinality.getRight());
+    Integer tokenCount = positionCardinality.getRight().size(); // token length of a single line
     
     if (tokenCount > 2) {
+      
       Integer uniqueTokenCount = 0; 
       for (int i = 0; i < tokenCollection.size(); i++) {
         uniqueTokenCount = (tokenCollection.get(i).keySet().size() == 1) ? (uniqueTokenCount + 1) : uniqueTokenCount;
       }
       double clusterGoodness = (double)uniqueTokenCount/(double)tokenCount;
       
+      /*
+       * If clusterGoodness <= Threshold, this partition is considered to be bad partition,
+       * and further partitioning is needed;
+       * If clusterGoodness > Threshold, this partition is considered to be good partition,
+       * and further partitioning is not needed.
+       */
       if (clusterGoodness < clusterGoodnessThreshold) {
-        return getMappingPositions(partitionEntry, tokenCollection, tokenCount, positionCardinality);
+        return getMappingPositions(partitionEntry, tokenCollection, positionCardinality);
       } else {
+        /*
+         * If not further partition is needed, return Pair<Integer, Integer>(0, 0),
+         * which indicates that this partition does not need further split, and move to the next partition.
+         */
         return (new Pair<Integer, Integer>(0, 0)); 
       }
+      
     } else if (tokenCount == 2) {
+      /*
+       * If there are only two tokens in a length, then P1 and P2 are these two positions, respectively
+       */
       return (new Pair<Integer, Integer>(0, 1));
     } else {
       return (new Pair<Integer, Integer>(0, 0)); 
@@ -548,13 +561,11 @@ public class IPLoM {
    * Get the mapping positions; Assume Pa is before P2
    * @param partitionIn, tokenCollection, tokenCount
    * @return Pair<Integer, Integer>
-   * TODO: need to be tested
    */
   private Pair<Integer, Integer> getMappingPositions(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry, 
-                                                        List<HashMap<String, Integer>> tokenCollection, Integer tokenCount, 
+                                                        List<HashMap<String, Integer>> tokenCollection, 
                                                         Pair<Integer, ArrayList<Integer>> positionCardinality) {
     Pair<Integer, Integer> tempPair = new Pair<>(0, 1);
-    Integer frequentCardinality = 1;
     ArrayList<Integer> cardinality = positionCardinality.getRight();
     HashMap<Integer, Integer> cardinalityCollection = new HashMap<>();
     
@@ -565,36 +576,74 @@ public class IPLoM {
       Integer key = cardinality.get(i);
       cardinalityCollection.put(key, cardinalityCollection.containsKey(key) ? (cardinalityCollection.get(key) + 1) : 1);
     }
+    /* -------------------- For debugging ---------------------- */
+    //out.println(cardinality);
+    //out.println(cardinalityCollection);
+    /* -------------------- For debugging ---------------------- */
     cardinalityCollection.remove(1);
     
     /*
      * Get the frequentCardinality
      */
-    Integer tempKey = 1;
-    for (Map.Entry<Integer, Integer> cardinalityEntry: cardinalityCollection.entrySet()) {
-      if (cardinalityEntry.getValue() > frequentCardinality) {
-        tempKey = cardinalityEntry.getKey();
-        frequentCardinality = cardinalityEntry.getValue();
-      } else if (cardinalityEntry.getValue() == frequentCardinality) {
-        /* if more than one frequent value, choose the one with lower token count*/
-        tempKey = (cardinalityEntry.getKey() < tempKey) ? cardinalityEntry.getKey(): tempKey;
-      }
-    }
+    Pair<Integer, Integer> freqCardPosition1 = getFrequentCardinality(cardinalityCollection);
+    Integer frequentCardinality1 = freqCardPosition1.getLeft();
+    Integer cardinalityFrequency1 = freqCardPosition1.getRight();
+    /* -------------------- For debugging ---------------------- */
+    //out.println(frequentCardinality1 + " + " + cardinalityFrequency1);
+    /* -------------------- For debugging ---------------------- */
     
     /*
      * Set the P1 and P2
      */
-    Integer p1 = cardinality.indexOf(tempKey);
-    if (frequentCardinality > 1) {
+    Integer p1 = cardinality.indexOf(frequentCardinality1);
+    /* -------------------- For debugging ---------------------- */
+    //out.println(p1);
+    /* -------------------- For debugging ---------------------- */
+    if (cardinalityFrequency1 > 1) {
       tempPair.setLeft(p1);
-      tempPair.setRight(cardinality.subList(p1 + 1, cardinality.size()).indexOf(tempKey) + p1 +1);
-    } else if (frequentCardinality == 1) {
+      /*
+       * p2 is the second token position with frequentCardinality1
+       */
+      tempPair.setRight(cardinality.subList(p1 + 1, cardinality.size()).indexOf(frequentCardinality1) + p1 +1);
+    } else if (cardinalityFrequency1 == 1) {
       tempPair.setLeft(p1);
-      tempPair.setRight(p1 + 1);
+      /*
+       * p2 is the token position with the next most frequentCardinality2
+       */
+      cardinalityCollection.remove(frequentCardinality1);
+      Pair<Integer, Integer> freqCardPosition2 = getFrequentCardinality(cardinalityCollection);
+      Integer frequentCardinality2 = freqCardPosition2.getLeft();
+      /* -------------------- For debugging ---------------------- */
+      //Integer cardinalityFrequency2 = freqCardPosition2.getRight();
+      //out.println(frequentCardinality2 + " + " + cardinalityFrequency2);
+      /* -------------------- For debugging ---------------------- */
+      tempPair.setRight(cardinality.indexOf(frequentCardinality2));
     }
-
+    /* -------------------- For debugging ---------------------- */
+    //out.println("P1+P2: " + tempPair.getLeft() + "+" + tempPair.getRight());
+    /* -------------------- For debugging ---------------------- */
+    
     return tempPair;
     
+  }
+  
+  
+  /**
+   * Get the most frequent cardinality and its frequency
+   */
+  private Pair<Integer, Integer> getFrequentCardinality(HashMap<Integer, Integer> cardinalityCollection) {
+    Integer cardinalityFrequency = 0;
+    Integer frequentCardinality = 0;
+    for (Map.Entry<Integer, Integer> cardinalityEntry: cardinalityCollection.entrySet()) {
+      if (cardinalityEntry.getValue() > cardinalityFrequency) {
+        frequentCardinality = cardinalityEntry.getKey();
+        cardinalityFrequency = cardinalityEntry.getValue();
+      } else if (cardinalityEntry.getValue() == cardinalityFrequency) {
+        /* if more than one frequent value, choose the one with lower token count*/
+        frequentCardinality = (cardinalityEntry.getKey() < frequentCardinality) ? cardinalityEntry.getKey(): frequentCardinality;
+      }
+    }
+    return new Pair<Integer, Integer>(frequentCardinality, cardinalityFrequency);
   }
   
   
@@ -619,6 +668,7 @@ public class IPLoM {
   
   /**
    * Get rank position
+   * @return Integer splitRank: either 1 or 2
    * TODO: get the position rank
    */
   private Integer getRankPosition(HashMap<String, Integer> tempTokenSet, Integer mappingType) {
