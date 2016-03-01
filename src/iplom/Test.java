@@ -5,7 +5,7 @@
 package iplom;
 
 import java.io.*;
-import java.util.*;
+//import java.util.*;
 
 import static java.lang.System.out;
 
@@ -37,7 +37,6 @@ public class Test {
     IPLoM logAnalyzer = new IPLoM(fileName);
     
     //logAnalyzer.readByLines();
-    
     //logAnalyzer.partitionByTokenSize();
     //logAnalyzer.printSizePartition();
     //logAnalyzer.partitionByTokenPosition();
