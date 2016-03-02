@@ -932,17 +932,22 @@ public class IPLoM {
     
     out.println("\nDiscover log templates.");
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry: partitionByBijection.entrySet()) {
+      List<HashMap<String, Integer>> tokenCollection = tokenCollection(partitionEntry);  
+      List<String> template = new ArrayList<>();
+      ArrayList<String> logMatrix = partitionEntry.getValue().get(0);
+      
+      for (int i = 0; i < logMatrix.size(); i++) {
+        String tempToken = logMatrix.get(i);
+        if (tokenCollection.get(i).size() == 1) {
+          template.add(tempToken);
+        } else {
+          template.add("*");
+        }
+      }
+      
+      out.println(template);
+    }
     
   }
   
