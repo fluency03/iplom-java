@@ -465,6 +465,8 @@ public class IPLoM {
   
   /**
    * partitionByTokenBijection
+   * @return
+   * Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByBijection
    */
   public void partitionByTokenBijection() {
     
@@ -490,9 +492,35 @@ public class IPLoM {
         HashMap<String, Integer> tokensSet1 = tokenCollection.get(P1);
         HashMap<String, Integer> tokensSet2 = tokenCollection.get(P2);
         Integer splitPosition = 0;
+        HashMap<String, Integer> removedTokenSet = new HashMap<>();
         
         for (Map.Entry<String, Integer> tokenEntry: tokensSet1.entrySet()) {
-          Integer mappingType = determineMappingType(partitionEntry, tokenEntry, P1, P2, tokensSet1, tokensSet2);
+          /*
+           * If this token is in the removedTokenSet
+           * That means it has been passed
+           */
+          if (removedTokenSet.containsKey(tokenEntry.getKey())) {
+            continue;
+          }
+          
+          /*
+           * Determine the mapping type and also return the tokens covered by this mapping.
+           */
+          Pair<Integer, Pair<HashMap<String, Integer>, HashMap<String, Integer>>> mappingPair = 
+              determineMappingType(partitionEntry, tokenEntry, P1, P2, tokensSet1, tokensSet2);
+          /*
+           * The mapping type
+           */
+          Integer mappingType = mappingPair.getLeft();
+          /*
+           * The sub-sets for above type of mapping.
+           * The tokens form these sub-sets will be removed from S1 and S2.
+           */
+          Pair<HashMap<String, Integer>, HashMap<String, Integer>> setPair = mappingPair.getRight();
+          /*
+           * Move all these sub-set tokens into removedTokenSet.
+           */
+          removedTokenSet.putAll(setPair.getLeft());
 
           
           
@@ -584,7 +612,7 @@ public class IPLoM {
    * @return Integer mappingType
    * Represented by an Integer: 1 (1-1), 2 (1-M), 3 (M-1), or 4 (M-M)
    */
-  private Integer determineMappingType(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
+  private Pair<Integer, Pair<HashMap<String, Integer>, HashMap<String, Integer>>> determineMappingType(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
                                           Map.Entry<String, Integer> tokenEntry, Integer P1, Integer P2,
                                           HashMap<String, Integer> tokensSet1, HashMap<String, Integer> tokensSet2) {
     Integer mappingType = 0;
@@ -608,10 +636,8 @@ public class IPLoM {
     } else {
       mappingType = 4;
     }
-    
-    // TODO ...
 
-    return mappingType;
+    return new Pair<Integer, Pair<HashMap<String, Integer>, HashMap<String, Integer>>>(mappingType, setPair);
     
   }
   
