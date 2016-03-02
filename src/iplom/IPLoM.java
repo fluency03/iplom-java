@@ -243,17 +243,20 @@ public class IPLoM {
         }
       }
     }
+    /* -------------------- For debugging ---------------------- */
+    //printSizePartition(partitionsBySize);
+    /* -------------------- For debugging ---------------------- */
     
     return partitionsBySize;
   }
   
   
   /**
-   * Print the sizePartitions
-   * @param 
+   * Print the partitions based on token size
+   * Used for debugging
    */
-  public void printSizePartition() {
-    Map<Integer, ArrayList<String>> partitionsBySize = partitionByTokenSize();
+  private void printSizePartition(Map<Integer, ArrayList<String>> partitionsBySize) {
+    //Map<Integer, ArrayList<String>> partitionsBySize = partitionByTokenSize();
     for (Map.Entry<Integer, ArrayList<String>> entry: partitionsBySize.entrySet()) {
       // out.println(entry.getKey() + " " + entry.getValue().size() + " " + entry.getValue());
       out.println(entry.getKey() + " " + entry.getValue().size());
@@ -392,8 +395,8 @@ public class IPLoM {
   private void printPartitionsByPosition(Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition) {
     //int i = 0; // int i, for debugging
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByPosition.entrySet()) {
-      /* if-statement for debugging */
       ArrayList<Object> key = entry.getKey();
+      /* if-statement for debugging */
       if ((Integer)key.get(0) == 8) {
         out.println(key.get(0) + " " + ((Pair)key.get(1)).getLeft() + " " + ((Pair)key.get(1)).getRight() + " " + entry.getValue());
         //i ++;
@@ -487,13 +490,16 @@ public class IPLoM {
          * Add this partition to output partition 
          * No need for further partitioning
          */
-        partitionByBijection.put(partitionEntry.getKey(), partitionEntry.getValue());
+        ArrayList<Object> tempKey = partitionEntry.getKey();
+        tempKey.add("No BI");
+        partitionByBijection.put(tempKey, partitionEntry.getValue());
       } else {
         HashMap<String, Integer> tokensSet1 = tokenCollection.get(P1);
         HashMap<String, Integer> tokensSet2 = tokenCollection.get(P2);
         Integer splitPosition = 0;
         HashMap<String, Integer> removedTokenSet = new HashMap<>();
         
+        Integer partitionCount = 1;
         for (Map.Entry<String, Integer> tokenEntry: tokensSet1.entrySet()) {
           /*
            * If this token is in the removedTokenSet
@@ -550,7 +556,16 @@ public class IPLoM {
               splitPosition = (setPair.getLeft().size() < setPair.getRight().size())? P1 : P2;
               //partitionTokenSet = (splitPosition == P1) ? setPair.getLeft() : setPair.getRight();
             } else {
-              
+              ArrayList<ArrayList<String>> tempPartition = new ArrayList<>();
+              for (ArrayList<String> logMatrix: partitionEntry.getValue()) {
+                if (setPair.getLeft().containsKey(logMatrix.get(P1))) {
+                  tempPartition.add(logMatrix);
+                }
+              }
+              partitionEntry.getValue().removeAll(tempPartition);
+              ArrayList<Object> tempKey = partitionEntry.getKey();
+              tempKey.add("M-M" + " " + (partitionCount++).toString());
+              partitionByBijection.put(tempKey, tempPartition);
               continue;
             }
           }
@@ -561,7 +576,20 @@ public class IPLoM {
            * Split partition into new partitions based on splitPosition and setPair
            * Then add them into output
            */
-          
+          Map<ArrayList<Object>, ArrayList<ArrayList<String>>> tempPartitionByBijection = new HashMap<>();
+          for (String tempToken: partitionTokenSet.keySet()) {
+            ArrayList<ArrayList<String>> tempPartition = new ArrayList<>();
+            for (ArrayList<String> logMatrix: partitionEntry.getValue()) {
+              if (tempToken == logMatrix.get(splitPosition)) {
+                tempPartition.add(logMatrix);
+              }
+            }
+            partitionEntry.getValue().removeAll(tempPartition);
+            ArrayList<Object> tempKey = partitionEntry.getKey();
+            tempKey.add(tempToken + " " + splitPosition.toString());
+            tempPartitionByBijection.put(tempKey, tempPartition);
+          }
+          partitionByBijection.putAll(tempPartitionByBijection);
           
           
           /*
@@ -593,9 +621,33 @@ public class IPLoM {
 
     }
     
+    /* -------------------- For debugging ---------------------- */
+    printPartitionByBijection(partitionByBijection);
+    /* -------------------- For debugging ---------------------- */
+    
     return partitionByBijection;
 
   }
+  
+  
+  /**
+   * Print out the partitions based on token bijection relationships
+   * Used for debugging
+   */
+  @SuppressWarnings("rawtypes")
+  private void printPartitionByBijection(Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByBijection) {
+    
+    for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByBijection.entrySet()) {
+      ArrayList<Object> key = entry.getKey();
+      /* if-statement for debugging */
+      if ((Integer)key.get(0) == 8) {
+        out.println(key.get(0) + " " + ((Pair)key.get(1)).getLeft() + " " + ((Pair)key.get(1)).getRight() + " " + key.get(2) + entry.getValue());
+      }
+    }
+    
+    
+  }
+  
   
   
   /**
