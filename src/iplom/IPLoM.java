@@ -468,7 +468,7 @@ public class IPLoM {
    * @return
    * Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByBijection
    */
-  public void partitionByTokenBijection() {
+  public Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByTokenBijection() {
     
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition = partitionByTokenPosition();
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByBijection = new HashMap<>();
@@ -523,51 +523,77 @@ public class IPLoM {
           removedTokenSet.putAll(setPair.getLeft());
 
           
-          
+          //HashMap<String, Integer> partitionTokenSet = new HashMap<>();
+          /*
+           * Determining the split position based on the mapping type
+           */
           if (mappingType == 1) {
             /* ------------------- mapping: 1-1 ------------------- */
             splitPosition = P1;
+            //partitionTokenSet = setPair.getLeft();
           } else if (mappingType == 2) {
             /* ------------------- mapping: 1-M ------------------- */
-            HashMap<String, Integer> tempTokenSet = new HashMap<>();
-            // TODO: change: how to determine tempTokenSet
-            tempTokenSet = tokensSet2;
-            splitPosition = (getRankPosition(partitionEntry, tempTokenSet, mappingType, P2) == 1) ? 
-                                positionPair.getLeft() : positionPair.getRight();
+            HashMap<String, Integer> tempTokenSet = setPair.getRight();
+            splitPosition = (getRankPosition(partitionEntry, tempTokenSet, mappingType, P2) == 1) ? P1 : P2;
+            //partitionTokenSet = (splitPosition == P1) ? setPair.getLeft() : setPair.getRight();
           } else if (mappingType == 3) {
             /* ------------------- mapping: M-1 ------------------- */
-            HashMap<String, Integer> tempTokenSet = new HashMap<>();
-            // TODO: change: how to determine tempTokenSet
-            tempTokenSet = tokensSet1;
-            splitPosition = (getRankPosition(partitionEntry, tempTokenSet, mappingType, P1) == 2) ? 
-                                positionPair.getRight() : positionPair.getLeft();
+            HashMap<String, Integer> tempTokenSet = setPair.getLeft();
+            splitPosition = (getRankPosition(partitionEntry, tempTokenSet, mappingType, P1) == 2) ? P2 : P1;
+            //partitionTokenSet = (splitPosition == P1) ? setPair.getLeft() : setPair.getRight();
           } else if (mappingType == 4) {
             /* ------------------- mapping: M-M ------------------- */
-            // TODO: create tempCollection1 and tempCollection2
-            
-            
-          
-          
-          
+            Boolean fromStep1 = false; // TODO: check the partitions from Step1 or Step2
+            if (fromStep1) {
+              //HashMap<String, Integer> tempTokenSet1 = setPair.getLeft();
+              //HashMap<String, Integer> tempTokenSet2 = setPair.getRight();
+              splitPosition = (setPair.getLeft().size() < setPair.getRight().size())? P1 : P2;
+              //partitionTokenSet = (splitPosition == P1) ? setPair.getLeft() : setPair.getRight();
+            } else {
+              
+              continue;
+            }
           }
           
+          HashMap<String, Integer> partitionTokenSet = (splitPosition == P1) ? setPair.getLeft() : setPair.getRight();
+          /*
+           * TODO: 
+           * Split partition into new partitions based on splitPosition and setPair
+           * Then add them into output
+           */
+          
+          
+          
+          /*
+           * TODO: if partition is empty, move to the next partition
+           */
+          if (partitionEntry.getValue().isEmpty()) {
+            break;
+          }
+          
+       
         }
         
-        
-        
-        
+        /*
+         * TODO: if partition is not empty, create a new partition with reminder lines
+         */
+        if (!partitionEntry.getValue().isEmpty()) {
+          partitionEntry.getKey().add("Outliers");
+          partitionByBijection.put(partitionEntry.getKey(), partitionEntry.getValue());
+        }
 
-        
+      
       }
       
+      /*
+       * TODO: add all partitions into the output
+       */
       
-      
+    
 
     }
     
-    
-    
-    
+    return partitionByBijection;
 
   }
   
