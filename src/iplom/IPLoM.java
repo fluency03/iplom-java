@@ -3,13 +3,11 @@
  * 
  * Based on the log mining algorithms published on the following papers:
  * 
- * [1] Adetokunbo AO Makanju, A Nur Zincir-Heywood, and Evangelos E Milios. Clustering 
- * event logs using iterative partitioning. In Proceedings of the 15th ACM SIGKDD international 
- * conference on Knowledge discovery and data mining, pages 1255–1264. ACM, 2009.
+ * [1] Adetokunbo AO Makanju, A Nur Zincir-Heywood, and Evangelos E Milios. Clustering event logs using iterative partitioning. 
+ * In Proceedings of the 15th ACM SIGKDD international conference on Knowledge discovery and data mining, pages 1255–1264. ACM, 2009.
  * 
- * [2] Adetokunbo Makanju, A Nur Zincir-Heywood, and Evangelos E Milios. A lightweight
- * algorithm for message type extraction in system application logs. Knowledge and Data
- * Engineering, IEEE Transactions on, 24(11):1921–1936, 2012.
+ * [2] Adetokunbo Makanju, A Nur Zincir-Heywood, and Evangelos E Milios. A lightweight algorithm for message type extraction in 
+ * system application logs. Knowledge and Data Engineering, IEEE Transactions on, 24(11):1921–1936, 2012.
  * 
  * @author ERICSSON/edghklj (Chang Liu)
  *
@@ -41,7 +39,7 @@ public class IPLoM {
    * Define the partition support threshold
    * Default: 0.00
    */
-  private double partitionSupportThreshold = 0;
+  private double partitionSupportThreshold = 0.00;
   
   /**
    * Define the cluster goodness threshold
@@ -65,25 +63,27 @@ public class IPLoM {
   /* ------------------------------------------------------------------------------------ */
   /*                                  Constructors                                        */
   /* ------------------------------------------------------------------------------------ */
+  
   public IPLoM () { }
   
   public IPLoM (String fileName) {
     this.sourceFile = new File(fileName);
   }
   
+  
   /* ------------------------------------------------------------------------------------ */
   /*                                    Methods                                           */
   /* ------------------------------------------------------------------------------------ */
   
   /**
-   * Set the log file
+   * Set the source log file name (path)
    */
   public void setFile(String fileName) {
     this.sourceFile = new File(fileName);
   }
   
   /**
-   * Print the log file name(path)
+   * Print the analyzed log file name (path)
    */
   public File returnFile () {
     return this.sourceFile;
@@ -104,7 +104,7 @@ public class IPLoM {
   }
   
   /**
-   * Set the cluster goodness
+   * Set the cluster goodness threshold
    */
   public void setClusterGoodnessThreshold(double goodness) {
     this.clusterGoodnessThreshold = goodness;
@@ -140,6 +140,7 @@ public class IPLoM {
    * String fileName: input log file name(path)
    */
   public void readByLines() {
+  	
     BufferedReader reader = null;
     
     try {
@@ -164,7 +165,9 @@ public class IPLoM {
         }
       }
     }
+    
   }
+  
   
   /**
    * Process a single line of the log
@@ -248,6 +251,7 @@ public class IPLoM {
     /* -------------------- For debugging ---------------------- */
     
     return partitionsBySize;
+    
   }
   
   
@@ -362,8 +366,6 @@ public class IPLoM {
       
     }
     
-    
-    
     /* -------------------- For debugging ---------------------- */
     printPartitionsByPosition(partitionByPosition);
     //out.println(matirxBySize);
@@ -412,6 +414,7 @@ public class IPLoM {
    * List<HashMap<String, Integer>> tokenCollection
    */
   private Pair<Integer, ArrayList<Integer>> positionCardinality(List<HashMap<String, Integer>> tokenCollection) {
+  	
     int position = 0;
     int lowestCardinality = Integer.MAX_VALUE;
     int tempSize = tokenCollection.size();
@@ -429,6 +432,7 @@ public class IPLoM {
     }
     
     return (new Pair<Integer, ArrayList<Integer>>(position, cardinality));
+    
   }
   
   
@@ -453,6 +457,7 @@ public class IPLoM {
     }
     
     return tokenCollection;
+    
   }
   
 
@@ -529,32 +534,25 @@ public class IPLoM {
           removedTokenSet.putAll(setPair.getLeft());
 
           
-          //HashMap<String, Integer> partitionTokenSet = new HashMap<>();
           /*
            * Determining the split position based on the mapping type
            */
           if (mappingType == 1) {
             /* ------------------- mapping: 1-1 ------------------- */
             splitPosition = P1;
-            //partitionTokenSet = setPair.getLeft();
           } else if (mappingType == 2) {
             /* ------------------- mapping: 1-M ------------------- */
             HashMap<String, Integer> tempTokenSet = setPair.getRight();
             splitPosition = (getRankPosition(partitionEntry, tempTokenSet, mappingType, P2) == 1) ? P1 : P2;
-            //partitionTokenSet = (splitPosition == P1) ? setPair.getLeft() : setPair.getRight();
           } else if (mappingType == 3) {
             /* ------------------- mapping: M-1 ------------------- */
             HashMap<String, Integer> tempTokenSet = setPair.getLeft();
             splitPosition = (getRankPosition(partitionEntry, tempTokenSet, mappingType, P1) == 2) ? P2 : P1;
-            //partitionTokenSet = (splitPosition == P1) ? setPair.getLeft() : setPair.getRight();
           } else if (mappingType == 4) {
             /* ------------------- mapping: M-M ------------------- */
             Boolean fromStep1 = false; // TODO: check the partitions from Step1 or Step2
             if (fromStep1) {
-              //HashMap<String, Integer> tempTokenSet1 = setPair.getLeft();
-              //HashMap<String, Integer> tempTokenSet2 = setPair.getRight();
               splitPosition = (setPair.getLeft().size() < setPair.getRight().size())? P1 : P2;
-              //partitionTokenSet = (splitPosition == P1) ? setPair.getLeft() : setPair.getRight();
             } else {
               ArrayList<ArrayList<String>> tempPartition = new ArrayList<>();
               for (ArrayList<String> logMatrix: partitionEntry.getValue()) {
@@ -571,6 +569,7 @@ public class IPLoM {
           }
           
           HashMap<String, Integer> partitionTokenSet = (splitPosition == P1) ? setPair.getLeft() : setPair.getRight();
+          
           /*
            * TODO: 
            * Split partition into new partitions based on splitPosition and setPair
@@ -591,15 +590,13 @@ public class IPLoM {
           }
           partitionByBijection.putAll(tempPartitionByBijection);
           
-          
           /*
            * TODO: if partition is empty, move to the next partition
            */
           if (partitionEntry.getValue().isEmpty()) {
             break;
           }
-          
-       
+
         }
         
         /*
@@ -610,14 +607,7 @@ public class IPLoM {
           partitionByBijection.put(partitionEntry.getKey(), partitionEntry.getValue());
         }
 
-      
       }
-      
-      /*
-       * TODO: add all partitions into the output
-       */
-      
-    
 
     }
     
@@ -636,7 +626,7 @@ public class IPLoM {
    */
   @SuppressWarnings("rawtypes")
   private void printPartitionByBijection(Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByBijection) {
-    
+  	
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> entry: partitionByBijection.entrySet()) {
       ArrayList<Object> key = entry.getKey();
       /* if-statement for debugging */
@@ -648,7 +638,6 @@ public class IPLoM {
       }
     }
     
-    
   }
   
   
@@ -658,7 +647,8 @@ public class IPLoM {
    * @return Integer splitRank: either 1 or 2
    */
   private Integer getRankPosition(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry, 
-                                     HashMap<String, Integer> tempTokenSet, Integer mappingType, Integer position) {
+  																	HashMap<String, Integer> tempTokenSet, Integer mappingType, Integer position) {
+  	
     Integer splitRank = 0;
     Integer cardinalityOfSet = tempTokenSet.size();
     Integer linesMatchSet = 0;
@@ -684,6 +674,7 @@ public class IPLoM {
     }
 
     return splitRank;
+    
   }
   
   
@@ -693,9 +684,11 @@ public class IPLoM {
    * @return Integer mappingType
    * Represented by an Integer: 1 (1-1), 2 (1-M), 3 (M-1), or 4 (M-M)
    */
-  private Pair<Integer, Pair<HashMap<String, Integer>, HashMap<String, Integer>>> determineMappingType(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
-                                          Map.Entry<String, Integer> tokenEntry, Integer P1, Integer P2,
-                                          HashMap<String, Integer> tokensSet1, HashMap<String, Integer> tokensSet2) {
+  private Pair<Integer, Pair<HashMap<String, Integer>, HashMap<String, Integer>>> 
+  				determineMappingType(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
+  															Map.Entry<String, Integer> tokenEntry, Integer P1, Integer P2,
+  															HashMap<String, Integer> tokensSet1, HashMap<String, Integer> tokensSet2) {
+  	
     Integer mappingType = 0;
     String tempToken1 = tokenEntry.getKey();
     HashMap<String, Integer> tempSet1 = new HashMap<>();
@@ -729,7 +722,8 @@ public class IPLoM {
    */
   private Pair<HashMap<String, Integer>, HashMap<String, Integer>> 
           completeTokenSets(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
-                            Integer P1, Integer P2, HashMap<String, Integer> tokensSet1, HashMap<String, Integer> tokensSet2) {
+          										Integer P1, Integer P2, HashMap<String, Integer> tokensSet1, HashMap<String, Integer> tokensSet2) {
+  	
     Integer sizeOfSet1 = tokensSet1.size();
     Integer sizeOfSet2 = tokensSet2.size();
     HashMap<String, Integer> tempSet1 = tokensSet1;
@@ -777,6 +771,7 @@ public class IPLoM {
      * Do the complementing recursively
      */
     return this.completeTokenSets(partitionEntry, P1, P2, tempSet1, tempSet2);
+    
   }
   
 
@@ -785,8 +780,9 @@ public class IPLoM {
    * Assume Pa is before P2
    */
   private Pair<Integer, Integer> determineP1P2(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry,
-                                                  List<HashMap<String, Integer>> tokenCollection, 
-                                                  Pair<Integer, ArrayList<Integer>> positionCardinality) {
+  																							List<HashMap<String, Integer>> tokenCollection, 
+                                                Pair<Integer, ArrayList<Integer>> positionCardinality) {
+  	
     Integer tokenCount = positionCardinality.getRight().size(); // token length of a single line
     
     if (tokenCount > 2) {
@@ -821,6 +817,7 @@ public class IPLoM {
     } else {
       return (new Pair<Integer, Integer>(0, 0)); 
     }
+    
   }
   
   
@@ -830,8 +827,9 @@ public class IPLoM {
    * @return Pair<Integer, Integer>
    */
   private Pair<Integer, Integer> getMappingPositions(Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry, 
-                                                        List<HashMap<String, Integer>> tokenCollection, 
+  																											List<HashMap<String, Integer>> tokenCollection, 
                                                         Pair<Integer, ArrayList<Integer>> positionCardinality) {
+  	
     Pair<Integer, Integer> tempPair = new Pair<>(0, 1);
     ArrayList<Integer> cardinality = positionCardinality.getRight();
     HashMap<Integer, Integer> cardinalityCollection = new HashMap<>();
@@ -899,6 +897,7 @@ public class IPLoM {
    * Get the most frequent cardinality and its frequency
    */
   private Pair<Integer, Integer> getFrequentCardinality(HashMap<Integer, Integer> cardinalityCollection) {
+  	
     Integer cardinalityFrequency = 0;
     Integer frequentCardinality = 0;
     for (Map.Entry<Integer, Integer> cardinalityEntry: cardinalityCollection.entrySet()) {
@@ -910,7 +909,9 @@ public class IPLoM {
         frequentCardinality = (cardinalityEntry.getKey() < frequentCardinality) ? cardinalityEntry.getKey(): frequentCardinality;
       }
     }
+    
     return new Pair<Integer, Integer>(frequentCardinality, cardinalityFrequency);
+    
   }
   
   
