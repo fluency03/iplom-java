@@ -39,7 +39,7 @@ public class Test {
     //logAnalyzer.readByLines();
     //logAnalyzer.partitionByTokenSize();
     //logAnalyzer.partitionByTokenPosition();
-    logAnalyzer.partitionByTokenBijection();
+    //logAnalyzer.partitionByTokenBijection();
     logAnalyzer.dicoverLogTemplate();
     
     
@@ -47,7 +47,7 @@ public class Test {
     
     
     /* ---------------- Analyzed file name  ---------------- */
-    out.println("The analyzed log file: " + logAnalyzer.returnFile());
+    out.println("\nThe analyzed log file: " + logAnalyzer.returnFile());
     /* ---------------- Analyzed file name  ---------------- */
     
     /* -------------- End time of the program -------------- */
@@ -55,7 +55,7 @@ public class Test {
     /* -------------- End time of the program -------------- */
     
     /* ------------- Print out the running time ------------- */
-    out.println("Running Time: " + (endTime - startTime) + " ms");
+    out.println("\nRunning Time: " + (endTime - startTime) + " ms");
     /* ------------- Print out the running time ------------- */
     
   }
