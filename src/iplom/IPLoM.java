@@ -641,7 +641,10 @@ public class IPLoM {
       ArrayList<Object> key = entry.getKey();
       /* if-statement for debugging */
       if ((Integer)key.get(0) == 8) {
-        out.println(key.get(0) + " " + ((Pair)key.get(1)).getLeft() + " " + ((Pair)key.get(1)).getRight() + " " + key.get(2) + entry.getValue());
+        out.println(key.get(0) + " " + 
+                    ((Pair)key.get(1)).getLeft() + " " + ((Pair)key.get(1)).getRight() + " " + 
+                    key.get(2) + " " + 
+                    entry.getValue());
       }
     }
     
