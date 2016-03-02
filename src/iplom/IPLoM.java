@@ -143,7 +143,7 @@ public class IPLoM {
     BufferedReader reader = null;
     
     try {
-      out.println("Read the file by lines.");
+      out.println("\nRead the file by lines.");
       reader = new BufferedReader(new FileReader(this.sourceFile));
       String tempString = null;
       int currentLine = 1;
@@ -206,7 +206,7 @@ public class IPLoM {
 	 */
   public Map<Integer, ArrayList<String>> partitionByTokenSize() {
     
-    out.println("Partition by token size.");
+    out.println("\nPartition by token size.");
     
     BufferedReader reader = null;
     Map<Integer, ArrayList<String>> partitionsBySize = new HashMap<>();
@@ -288,7 +288,7 @@ public class IPLoM {
     Map<Integer, ArrayList<ArrayList<String>>> matirxBySize = new HashMap<>();
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition = new HashMap<>();
     
-    out.println("Partition by token position.");
+    out.println("\nPartition by token position.");
     
     /*
      * For each of the partition divided based on token size
@@ -476,7 +476,7 @@ public class IPLoM {
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByPosition = partitionByTokenPosition();
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByBijection = new HashMap<>();
     
-    out.println("Partition by token bijection.");
+    out.println("\nPartition by token bijection.");
     
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry: partitionByPosition.entrySet()) {
       List<HashMap<String, Integer>> tokenCollection = tokenCollection(partitionEntry);
@@ -924,9 +924,10 @@ public class IPLoM {
    * Summary the log templates from each partition 
    */
   public void dicoverLogTemplate(){
+
+    Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByBijection = partitionByTokenBijection();
     
-    
-    
+    out.println("\nDiscover log templates.");
     
     
     
