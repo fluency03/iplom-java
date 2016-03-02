@@ -1,5 +1,7 @@
+
 Partition by token size.
 Partition by token size.
+
 Partition by token position.
 0.875
 0.125
@@ -170,6 +172,7 @@ Partition by token position.
 8 config 1 [[SC-1, config, Reloading, configuration, on, node, 2, SC-2], [SC-1, config, Reloading, configuration, on, node, 1, SC-1], [SC-1, config, Reloading, configuration, on, node, 3, PL-3], [SC-1, config, Reloading, configuration, on, node, 4, PL-4], [SC-1, config, Reloading, configuration, on, node, 5, PL-5]]
 8 lde-scaling 1 [[SC-1, lde-scaling, 17061, CR, object, for, PL-6, instantiated], [SC-1, lde-scaling, 17285, CR, object, for, PL-7, instantiated], [SC-1, lde-scaling, 17516, CR, object, for, PL-8, instantiated], [SC-1, lde-scaling, 17755, CR, object, for, PL-9, instantiated], [SC-1, lde-scaling, 18106, CR, object, for, PL-10, instantiated], [SC-1, lde-scaling, 17866, CR, object, for, PL-11, instantiated], [SC-1, lde-scaling, 17951, CR, object, for, PL-12, instantiated], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-10], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-11], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-6], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-7], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-12], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-9], [SC-1, lde-scaling, Sucessfuly, installed, a, new, payload, PL-8]]
 8 lde-imm 1 [[SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-6], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-7], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-8], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-9], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-10], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-11], [SC-1, lde-imm, Adding, ComputeResource, node, with, hostname, PL-12]]
+
 Partition by token bijection.
 8 lde-scaling-cmw 1 No BI[[SC-1, lde-scaling-cmw, on-register, CR, object, for, PL-6, instantiated], [SC-1, lde-scaling-cmw, on-register, CR, object, for, PL-7, instantiated], [SC-1, lde-scaling-cmw, on-register, CR, object, for, PL-8, instantiated], [SC-1, lde-scaling-cmw, on-register, CR, object, for, PL-9, instantiated], [SC-1, lde-scaling-cmw, on-register, CR, object, for, PL-10, instantiated], [SC-1, lde-scaling-cmw, on-register, CR, object, for, PL-11, instantiated], [SC-1, lde-scaling-cmw, on-register, CR, object, for, PL-12, instantiated]]
 8 com 1 M-M 1[[SC-1, com, PMT-SA, Received, un-subscription, request, of, PM-events], [SC-1, com, PMT-SA, Received, PmComComponent, pmtsa_stop, stop, call], [SC-1, com, PMT-SA, Received, subscription, request, on, PM-events]]
@@ -198,5 +201,9 @@ Partition by token bijection.
 8 com 1 M-M 1[[SC-1, com, COM_SA, comsa_rplist_imm_readObject, autoRetry_saImmOmAccessorGet_2, return, SA_AIS_ERR_NOT_EXIST, 12]]
 8 logger 1 No BI[[SC-1, logger, set, permissions, and, ownership, on, COMSA]]
 8 CSM 1 No BI[[SC-1, CSM, CMW-scale_out, template, PL, node, nr, PL-4]]
+
+Discover log templates.
+
 The analyzed log file: /home/edghklj/workspace/github/messages.1
-Running Time: 344 ms
+
+Running Time: 358 ms
