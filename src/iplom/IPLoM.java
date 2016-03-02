@@ -665,11 +665,11 @@ public class IPLoM {
       }
       
     }
-    
-    // TODO ...
 
+    /*
+     * Do the complementing recursively
+     */
     return this.completeTokenSets(partitionEntry, P1, P2, tempSet1, tempSet2);
-
   }
   
 
