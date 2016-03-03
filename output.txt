@@ -409,6 +409,40 @@ Discover log templates.
 [SC-1, CSM, CMW-scale_out, template, PL, node, nr, PL-4]
 [SC-1, osafimmd, 10648, NO, Successfully, announced, sync., New, ruling, epoch, *]
 
+Number of templates: 205
+
 The analyzed log file: /home/edghklj/workspace/github/messages.1
 
-Running Time: 368 ms
+Running Time: 388 ms
+asfe
+[
+[
+asdq
+]
+ 
+fwev
+=
+=
+qw
+ 
+cq
+:
+we
+ 
+we
+'
+f
+'
+we
+ 
+ 
+/
+asad
+/
+qwd
+/
+asdq
+ 
+asd
+|
+111
