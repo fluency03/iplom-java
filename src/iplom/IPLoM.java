@@ -132,6 +132,33 @@ public class IPLoM {
     this.upperBound = upperBound;
   }
   
+  /**
+   * Check the token type
+   */
+  public Integer checkTokenType(String token) {
+    Integer tokenType = 0;
+    
+    // TODO: 
+    /* ------------------- Five types of tokens ------------------- */
+    String regexOnlySymbols = "";
+    String regexOnlyLetters = "^[A-Za-z]+$";
+    String regexSymbolsLetters = "";
+    String regexNumbersLetters = "";
+    String regexNumbersSymbols = "";
+    /* ------------------- Five types of tokens ------------------- */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    return tokenType;
+  }
+  
+  
   /* ----------------------------------------------------------------------------------- */
   
   /**
@@ -932,6 +959,7 @@ public class IPLoM {
     Map<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionByBijection = partitionByTokenBijection();
     
     out.println("\nDiscover log templates.");
+    Integer numOfTemplates = 0;
     
     for (Map.Entry<ArrayList<Object>, ArrayList<ArrayList<String>>> partitionEntry: partitionByBijection.entrySet()) {
       List<HashMap<String, Integer>> tokenCollection = tokenCollection(partitionEntry);  
@@ -948,7 +976,10 @@ public class IPLoM {
       }
       
       out.println(template);
+      numOfTemplates ++;
     }
+    
+    out.println("\nNumber of templates: " + numOfTemplates);
     
   }
   
