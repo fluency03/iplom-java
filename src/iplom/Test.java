@@ -62,13 +62,13 @@ public class Test {
     
     
     /* --------------------- For testing ----------------------- */
-    String str = "asfe[[asdq] fwev==qw cq:we we'f'we  /asad/qwd/asdq asd|111";
-    String delimiter = " []=:()/|\'\"";
+    //String str = "asfe[[asdq] fwev==qw cq:we we'f'we  /asad/qwd/asdq asd|111";
+    //String delimiter = " []=:()/|\'\"";
     
-    StringTokenizer tokens = new StringTokenizer(str, delimiter, true);
-    while (tokens.hasMoreElements()) {
-      out.println(tokens.nextToken());
-    }
+    //StringTokenizer tokens = new StringTokenizer(str, delimiter, true);
+    //while (tokens.hasMoreElements()) {
+    //  out.println(tokens.nextToken());
+    //}
     /* --------------------- For testing ----------------------- */
     
 
