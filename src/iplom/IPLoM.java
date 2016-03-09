@@ -148,7 +148,7 @@ public class IPLoM {
     /* ------------------- Five types of tokens ------------------- */
     
     
-    
+    // TODO: 
     
     
     
@@ -240,29 +240,44 @@ public class IPLoM {
     
     BufferedReader reader = null;
     Map<Integer, ArrayList<String>> partitionsBySize = new HashMap<>();
+    String timeRegex = "^((Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (0?[0-9]|[12][0-9]|3[01]) (([0-1][0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]) )"; 
     
     try {
       out.println("Partition by token size.");
       reader = new BufferedReader(new FileReader(this.sourceFile));
-      String tempString = null;
+      String currString = reader.readLine();
+      String addedString = currString;
       //int currentLine = 1;
-      while ((tempString = reader.readLine()) != null) {
+      do {
+      	
         /* 
-         * Remove the time stamp and server name here
-         * TODO: other more intelligent way to get rid of time, server name, <number>, etc.
+         * Check whether it is a line without time-stamp
+         * And merge the logs without time-stamp with their nearest previous one with time-stamp
          */
-        tempString = tempString.substring(16, tempString.length());
-        Integer tokenSize = tokenSizeOfString(tempString);
-        if (partitionsBySize.containsKey(tokenSize)) {
-          partitionsBySize.get(tokenSize).add(tempString);
-        } else {
-          ArrayList<String> tempList = new ArrayList<>();
-          tempList.add(tempString);
-          partitionsBySize.put(tokenSize, tempList);
-        }
-        //currentLine ++;
-      }
+      	if (currString.length() < 16) {
+      		addedString = addedString + " " + currString;
+      		continue;
+      	} else if (!currString.substring(0, 16).matches(timeRegex)) {
+      		addedString = addedString + " " + currString;
+      		continue;
+      	} else {
+      		addedString = addedString.substring(16, addedString.length());
+
+          Integer tokenSize = tokenSizeOfString(addedString);
+          if (partitionsBySize.containsKey(tokenSize)) {
+            partitionsBySize.get(tokenSize).add(addedString);
+          } else {
+            ArrayList<String> tempList = new ArrayList<>();
+            tempList.add(addedString);
+            partitionsBySize.put(tokenSize, tempList);
+          }
+          //currentLine ++;
+      		addedString = currString;
+      	}
+        
+      } while ((currString = reader.readLine()) != null) ;
       reader.close();
+      
     } catch (IOException e) {
       e.printStackTrace();
     } finally {
@@ -452,6 +467,9 @@ public class IPLoM {
       int tempCardinality = tokenCollection.get(j).size();
       cardinality.add(tempCardinality);
       
+      /*
+       * Only for the tempCardinality > 1 positions
+       */
       if (tempCardinality < lowestCardinality && tempCardinality > 1) {
         lowestCardinality = tempCardinality;
         position = j;
