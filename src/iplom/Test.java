@@ -23,7 +23,7 @@ public class Test {
     
     /* ----------------- Output the printed to a file  ----------------- */
     try {
-      System.setOut(new PrintStream(new FileOutputStream("/home/edghklj/workspace/github/iplom-java/output.txt")));
+      System.setOut(new PrintStream(new FileOutputStream("/home/cliu/Documents/github/iplom-java/output1.txt")));
     } catch (FileNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -34,7 +34,7 @@ public class Test {
     
     
     /* ------------------------- Main program  ------------------------- */
-    String fileName = "/home/edghklj/workspace/github/messages.1";
+    String fileName = "/home/cliu/Documents/SC-1/messages.1";
     IPLoM logAnalyzer = new IPLoM(fileName);
     
     //logAnalyzer.readByLines();
@@ -69,6 +69,11 @@ public class Test {
     //while (tokens.hasMoreElements()) {
     //  out.println(tokens.nextToken());
     //}
+    /* --------------------- For testing ----------------------- */
+    //String timeRegex = "^((Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (0?[0-9]|[12][0-9]|3[01]) (([0-1][0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]))"; 
+    //String inputTest = "Feb 17 05:18:17 ";
+    
+    //out.print(inputTest.substring(0, 15).matches(timeRegex));
     /* --------------------- For testing ----------------------- */
     
 
