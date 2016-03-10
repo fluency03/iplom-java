@@ -34,7 +34,7 @@ public class Test {
     
     
     /* ------------------------- Main program  ------------------------- */
-    String fileName = "/home/cliu/Documents/SC-1/messages.1";
+    String fileName = "/home/cliu/Documents/SC-1/temp";
     IPLoM logAnalyzer = new IPLoM(fileName);
     
     //logAnalyzer.readByLines();
